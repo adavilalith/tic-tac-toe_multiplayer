@@ -15,7 +15,22 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log(socket.id+'connected');
+
+  socket.on("createGame",(sId)=>{
+    console.log("room "+sId+" created ")
+
+    socket.join(String(sId))
+  })
+  socket.on("joinGame",(sId)=>{
+    socket.join(String(sId))
+    console.log(socket.id+" room "+sId+" joined ")
+
+  })
+  socket.emit("hello","hi "+socket.id)
+  socket.on("disconnect",()=>{
+    console.log(socket.id+" disconnected")
+  })
 });
 
 server.listen(3000, () => {
