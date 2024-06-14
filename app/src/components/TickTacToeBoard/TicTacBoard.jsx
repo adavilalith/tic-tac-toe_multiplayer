@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import "./TicTacBoard.css"
+import { Socket } from 'socket.io-client';
+import { SocketContext } from '../../App';
 
-export default function TicTacBoard() {
+export default function TicTacBoard({roomId,player}) {
+    const socket = useContext(SocketContext)
     const [board,setBoard] = useState([" "," "," ",
                                        " "," "," ",
                                        " "," "," ",
@@ -21,17 +24,21 @@ export default function TicTacBoard() {
             setOutputMsg("")
             return;
         }
-        console.log(cell)
+
         
+
         if(tempBoard[cell]!=" "){
             setOutputMsg("Incorrect move try again!");
             return;
         }
-        if(turn%2){
-            tempBoard[cell] = "X";
+        if(turn%2==player){
+            tempBoard[cell] = (player==1)?"X":"O";
+            socket.emit("turn",String(cell)+"@"+roomId)
         }
         else{
-            tempBoard[cell] = "O";
+            socket.on("turn",(move)=>{
+                tempBoard[Number(move)]=(player==1)?"O":"X";
+            })
         }
         setTurn(turn+1)
         setBoard(tempBoard);
@@ -52,7 +59,6 @@ export default function TicTacBoard() {
                          [2,4,6],
                         ]
         for(let cond=0;cond<8;cond++){
-            console.log(winCond[cond])
             let Xwin=true;
             let Owin=true;
             for(let i=0;i<3;i++){
@@ -95,6 +101,8 @@ export default function TicTacBoard() {
     return (
         <>
         <div className="main" >
+        <div><h1>{roomId}</h1></div>
+        <div><h1>{(player==1)?"X":"O"}</h1></div>
         <div className="board">
             <div className="cell" id="1" onClick={()=>updateBoard(0)}>{board[0]}</div>
             <div className="cell" id="2" onClick={()=>updateBoard(1)}>{board[1]}</div>

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const { stringify } = require('querystring');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server,{
@@ -22,24 +23,40 @@ io.on('connection', (socket) => {
 
   socket.on("createGame",(roomId)=>{
     console.log("room "+roomId+" created ")
-    rooms[roomId]=1
+    rooms[roomId]={}
+    rooms[roomId]["roomId"]=roomId
+    rooms[roomId]["count"]=1
+    rooms[roomId][socket.id]=0
     socket.join(roomId)
     console.log(rooms)
   })
 
   socket.on("joinGame",(roomId)=>{
-    if(rooms[roomId]<2){
+    if(rooms[roomId]["count"]<2){
       socket.join(roomId)
-      rooms[roomId]=2;
+      rooms[roomId]["count"]=2;
+      rooms[roomId][socket.id]=1
     console.log(socket.id+" joined "+" room "+roomId)
-  io.in(roomId).emit("gameStart","success")
+    io.in(roomId).emit("gameStart","success")
+    
   }
     else{
       console.log("room full!!!")
       socket.emit("joinGame","fail")
     }
   })
+  socket.on("playersInfo",(roomId)=>{
+    if(rooms[roomId]){
+      console.log(roomId, "getting info")
+      io.in(roomId).emit("playersInfo",JSON.stringify(rooms[roomId]))
+    }
+  })
 
+  socket.on("turn",(data)=>{
+    [move,roomId] = data.split("@")
+    console.log(move)
+    io.in(roomId).emit("turn",move);
+  })
 
   socket.on("disconnecting", () => {
     console.log("disconnecting",socket.rooms)

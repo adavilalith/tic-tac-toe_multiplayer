@@ -6,7 +6,7 @@ import {io} from 'socket.io-client';
 import Lobby from './pages/Lobby/Lobby';
 import GamePage from './pages/GamePage/GamePage';
 
-const socket = io("https://animated-engine-q79v69wgr9vhxx9j-3000.app.github.dev/");
+const socket = io("https://symmetrical-zebra-ww5667qpwpqf5p7w-3000.app.github.dev/");
 
 export const SocketContext = createContext(null)
 

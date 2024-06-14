@@ -9,7 +9,6 @@ export default function Lobby() {
 
   socket.on("gameStart",(msg)=>{
     if(msg=="success"){
-      socket.emit("getPlayers",socket.id)
         navigate("/GamePage")
     }
  })    
