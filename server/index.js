@@ -23,22 +23,23 @@ io.on('connection', (socket) => {
   socket.on("createGame",(roomId)=>{
     console.log("room "+roomId+" created ")
     rooms[roomId]=1
-    socket.join(String(roomId))
+    socket.join(roomId)
     console.log(rooms)
   })
+
   socket.on("joinGame",(roomId)=>{
     if(rooms[roomId]<2){
-      socket.join(String(roomId))
+      socket.join(roomId)
       rooms[roomId]=2;
-    console.log(socket.id+" room "+roomId+" joined ")
-    socket.emit("joinGame","success")
+    console.log(socket.id+" joined "+" room "+roomId)
+  io.in(roomId).emit("gameStart","success")
   }
     else{
       console.log("room full!!!")
       socket.emit("joinGame","fail")
     }
   })
-  socket.emit("hello","hi "+socket.id)
+
 
   socket.on("disconnecting", () => {
     console.log("disconnecting",socket.rooms)
@@ -51,6 +52,8 @@ io.on('connection', (socket) => {
     console.log(socket.id+" disconnected")
     console.log(rooms)
   })
+
+
 });
 
 server.listen(3000, () => {
