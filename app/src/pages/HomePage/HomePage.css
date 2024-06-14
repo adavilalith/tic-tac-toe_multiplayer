@@ -1,0 +1,16 @@
+#createGame{
+    padding: 20% 0%;
+    display: flex;
+    justify-content: center;
+}
+
+#joinGame{
+    padding: 20% 0%;
+    display: flex;
+    justify-content: center;
+}
+
+
+.Title{
+    color: burlywood;
+}
