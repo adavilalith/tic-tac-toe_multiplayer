@@ -21,6 +21,14 @@ function App() {
 
   const joinGame=()=>{
     socket.emit("joinGame",connectId)
+    socket.on("joinGame",(msg)=>{
+      if(msg=="success"){
+        console.log("lets play")
+      }
+      else{
+        console.log("room full")
+      }
+    })
   }
   return (
     <>

@@ -10,6 +10,9 @@ const io = new Server(server,{
 }
 );
 
+let rooms = {}
+
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
@@ -17,19 +20,36 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log(socket.id+'connected');
 
-  socket.on("createGame",(sId)=>{
-    console.log("room "+sId+" created ")
-
-    socket.join(String(sId))
+  socket.on("createGame",(roomId)=>{
+    console.log("room "+roomId+" created ")
+    rooms[roomId]=1
+    socket.join(String(roomId))
+    console.log(rooms)
   })
-  socket.on("joinGame",(sId)=>{
-    socket.join(String(sId))
-    console.log(socket.id+" room "+sId+" joined ")
-
+  socket.on("joinGame",(roomId)=>{
+    if(rooms[roomId]<2){
+      socket.join(String(roomId))
+      rooms[roomId]=2;
+    console.log(socket.id+" room "+roomId+" joined ")
+    socket.emit("joinGame","success")
+  }
+    else{
+      console.log("room full!!!")
+      socket.emit("joinGame","fail")
+    }
   })
   socket.emit("hello","hi "+socket.id)
+
+  socket.on("disconnecting", () => {
+    console.log("disconnecting",socket.rooms)
+    for(const room of socket.rooms){
+      delete rooms[room];
+    }
+  });
+
   socket.on("disconnect",()=>{
     console.log(socket.id+" disconnected")
+    console.log(rooms)
   })
 });
 
