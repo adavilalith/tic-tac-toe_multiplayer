@@ -11,7 +11,7 @@ export default function GamePage() {
     socket.emit("playersInfo",socket.id) 
     socket.on("playersInfo",(data)=>{
       data =JSON.parse(data)
-      console.log(data)
+      // console.log(data)
       setPlayer(Number(data[socket.id]))
       setRoomId(data[roomId])
     })

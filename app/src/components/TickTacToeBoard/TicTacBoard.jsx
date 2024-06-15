@@ -4,6 +4,7 @@ import { Socket } from 'socket.io-client';
 import { SocketContext } from '../../App';
 
 export default function TicTacBoard({roomId,player}) {
+    console.log(roomId,player)
     const socket = useContext(SocketContext)
     const [board,setBoard] = useState([" "," "," ",
                                        " "," "," ",
@@ -32,11 +33,14 @@ export default function TicTacBoard({roomId,player}) {
             return;
         }
         if(turn%2==player){
+            console.log("my turn")
             tempBoard[cell] = (player==1)?"X":"O";
-            socket.emit("turn",String(cell)+"@"+roomId)
+            socket.emit("turn",String(JSON.stringify({"move":cell,"roomId":roomId})))
         }
         else{
+            console.log("opp turn")
             socket.on("turn",(move)=>{
+                console.log(move)
                 tempBoard[Number(move)]=(player==1)?"O":"X";
             })
         }
