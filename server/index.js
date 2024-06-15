@@ -47,15 +47,15 @@ io.on('connection', (socket) => {
   })
   socket.on("playersInfo",(roomId)=>{
     if(rooms[roomId]){
-      console.log(roomId, "getting info")
+      console.log(socket.id, "getting info of ",roomId)
       io.in(roomId).emit("playersInfo",JSON.stringify(rooms[roomId]))
     }
   })
 
   socket.on("turn",(data)=>{
-    [move,roomId] = data.split("@")
-    console.log(move)
-    io.in(roomId).emit("turn",move);
+    data =JSON.parse(data)
+    console.log(data.move,rooms[data.roomId])
+    io.in(data.roomId).emit("turn",data.move);
   })
 
   socket.on("disconnecting", () => {
