@@ -1,21 +1,25 @@
 import React, { useContext, useEffect } from 'react'
-import { SocketContext } from '../../App'
+import { GameContext, SocketContext } from '../../App'
 import { useNavigate } from 'react-router-dom'
 
 export default function Lobby() {
   const navigate = useNavigate()  
   const socket = useContext(SocketContext)
-  console.log(socket.id)
+  const gameInfo = useContext(GameContext)  
 
   socket.on("gameStart",(msg)=>{
     if(msg=="success"){
+        gameInfo.inGame=true
         navigate("/GamePage")
     }
  })    
   return (
     <div>
       <h1>lobby</h1>
-      <h3>invite code: {socket.id}</h3>
+      <h3>invite code:</h3>
+      <h1>
+      {socket.id}
+      </h1>
     </div>
   )
 }

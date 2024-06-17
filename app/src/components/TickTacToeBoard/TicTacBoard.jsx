@@ -3,8 +3,7 @@ import "./TicTacBoard.css"
 import { Socket } from 'socket.io-client';
 import { SocketContext } from '../../App';
 
-export default function TicTacBoard({roomId,player}) {
-    console.log(roomId,player)
+export default function TicTacBoard({roomId}) {
     const socket = useContext(SocketContext)
     const [board,setBoard] = useState([" "," "," ",
                                        " "," "," ",
@@ -13,100 +12,39 @@ export default function TicTacBoard({roomId,player}) {
     const [turn,setTurn] = useState(0);
     const [outputMsg,setOutputMsg] = useState("");
     const [running,setRunning] = useState(true);
-
+    
+    useEffect(()=>{
+        socket.on("gameTurn",(res)=>{
+            res=JSON.parse(res)
+            if(res.status==0){
+                setBoard(res.board)
+            }
+        })
+    },[])
+    
     const updateBoard = (cell)=>{
-        let tempBoard = [...board]
-        if(!running){
-            setRunning(true);
-            setBoard([" "," "," ",
-                " "," "," ",
-                " "," "," ",
-               ]);
-            setOutputMsg("")
-            return;
-        }
+        socket.emit("gameTurn",cell)
+        socket.on("gameTurn",(res)=>{
+            res = JSON.parse(res);
+            if(res.status==10){
+                setOutputMsg(res.outputMsg)
+            }
+            else if(res.status==1){
+                setBoard(res.board)
+                setOutputMsg(res.outputMsg)
+            }
+            else{
+                setBoard(res.board)
+                setOutputMsg(res.outputMsg)
 
-        
-
-        if(tempBoard[cell]!=" "){
-            setOutputMsg("Incorrect move try again!");
-            return;
-        }
-        if(turn%2==player){
-            console.log("my turn")
-            tempBoard[cell] = (player==1)?"X":"O";
-            socket.emit("turn",String(JSON.stringify({"move":cell,"roomId":roomId})))
-        }
-        else{
-            console.log("opp turn")
-            socket.on("turn",(move)=>{
-                console.log(move)
-                tempBoard[Number(move)]=(player==1)?"O":"X";
-            })
-        }
-        setTurn(turn+1)
-        setBoard(tempBoard);
-        setOutputMsg("")
-        checkWinner(tempBoard)
-
-    }
-
-    const checkWinner = (tempBoard)=>{
-        console.log("checking")
-        const winCond = [[0,1,2],
-                         [3,4,5],
-                         [6,7,8],
-                         [0,3,6],
-                         [1,4,7],
-                         [2,5,8],
-                         [0,4,8],
-                         [2,4,6],
-                        ]
-        for(let cond=0;cond<8;cond++){
-            let Xwin=true;
-            let Owin=true;
-            for(let i=0;i<3;i++){
-                if(tempBoard[winCond[cond][i]]!="X"){
-                    Xwin=false;
-                    break;
-                }
             }
-            for(let i=0;i<3;i++){
-                if(tempBoard[winCond[cond][i]]!="O"){
-                    Owin=false;
-                    break;
-                }
-            }
-            if(Xwin){
-                setRunning(false);
-                setOutputMsg("X is the winner");
-                return;
-            }
-            if(Owin){
-                setOutputMsg("O is the winner");
-                setRunning(false);
-                return;    
-            }
-            let fullCond=true
-            for(let i=0;i<9;i++){
-                if(tempBoard[i]==" "){
-                    fullCond=false;
-                    break;
-                }
-            }
-            if(fullCond){
-                setOutputMsg("Tie");
-                setRunning(false);
-            }
-            
-        }
+        })
     }
 
     return (
         <>
         <div className="main" >
         <div><h1>{roomId}</h1></div>
-        <div><h1>{(player==1)?"X":"O"}</h1></div>
         <div className="board">
             <div className="cell" id="1" onClick={()=>updateBoard(0)}>{board[0]}</div>
             <div className="cell" id="2" onClick={()=>updateBoard(1)}>{board[1]}</div>

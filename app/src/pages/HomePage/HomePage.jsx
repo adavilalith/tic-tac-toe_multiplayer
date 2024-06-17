@@ -1,17 +1,19 @@
 import React,{useState, useEffect, useContext} from 'react';
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
-import { SocketContext } from '../../App';
+import { GameContext, SocketContext } from '../../App';
 
 export default function HomePage() {
   const navigate = useNavigate()
   const [connectId,setConnectId] = useState()
   const socket = useContext(SocketContext)
-  
+  const gameInfo = useContext(GameContext)
 
   const createGame=()=>{
     console.log("try create")
     socket.emit("createGame",socket.id)
+    gameInfo.gameName="tic tac toe"
+    gameInfo.roomId=socket.id
     navigate('/Lobby');
   }
 
@@ -21,6 +23,9 @@ export default function HomePage() {
       console.log(msg)
       if(msg=="success"){
         console.log("lets play")
+        gameInfo.inGame=true
+        gameInfo.gameName="tic tac toe"
+        gameInfo.roomId=connectId
         navigate("/GamePage")
       }
       else{

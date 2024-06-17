@@ -8,6 +8,8 @@ import GamePage from './pages/GamePage/GamePage';
 
 const socket = io("https://symmetrical-zebra-ww5667qpwpqf5p7w-3000.app.github.dev/");
 
+export const GameContext = createContext(null);
+const gameInfo = {"inGame":false,"gameName":"no game","roomId":"no room"}
 export const SocketContext = createContext(null)
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
   },[])
   return (
     <>
+      <GameContext.Provider value={gameInfo}>
       <SocketContext.Provider value={socket}>
       <Routes>
         <Route path="/" element={<HomePage/>}></Route>
@@ -27,6 +30,7 @@ function App() {
         <Route path="/GamePage" element={<GamePage/>}></Route>
       </Routes>
       </SocketContext.Provider>
+      </GameContext.Provider>
     </>
   )
 }
