@@ -6,7 +6,7 @@ import {io} from 'socket.io-client';
 import Lobby from './pages/Lobby/Lobby';
 import GamePage from './pages/GamePage/GamePage';
 
-const socket = io("https://symmetrical-zebra-ww5667qpwpqf5p7w-3000.app.github.dev/");
+const socket = io("https://symmetrical-zebra-ww5667qpwpqf5p7w-8080.app.github.dev/");
 
 export const GameContext = createContext(null);
 const gameInfo = {"inGame":false,"gameName":"no game","roomId":"no room"}
