@@ -5,6 +5,7 @@ import { Routes,Route } from 'react-router-dom'
 import {io} from 'socket.io-client';
 import Lobby from './pages/Lobby/Lobby';
 import GamePage from './pages/GamePage/GamePage';
+import CreateUser from './pages/Createuser/CreateUser';
 
 const socket = io("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/");
 
@@ -25,7 +26,8 @@ function App() {
       <GameContext.Provider value={gameInfo}>
       <SocketContext.Provider value={socket}>
       <Routes>
-        <Route path="/" element={<HomePage/>}></Route>
+        <Route path="/" element={<CreateUser/>}></Route>
+        <Route path="/Home" element={<HomePage/>}></Route>
         <Route path="/Lobby" element={<Lobby/>}></Route>
         <Route path="/GamePage" element={<GamePage/>}></Route>
       </Routes>
