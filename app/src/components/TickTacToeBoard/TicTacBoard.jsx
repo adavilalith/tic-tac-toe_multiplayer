@@ -2,11 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import "./TicTacBoard.css"
 import { Socket } from 'socket.io-client';
 import { GameContext, SocketContext } from '../../App';
+import { useNavigate } from 'react-router-dom';
+
+
 
 export default function TicTacBoard() {
     const socket = useContext(SocketContext)
     const gameInfo = useContext(GameContext)
     const roomId = gameInfo.roomId
+    const navigate = useNavigate();
     const [board,setBoard] = useState([" "," "," ",
                                        " "," "," ",
                                        " "," "," ",
@@ -21,6 +25,10 @@ export default function TicTacBoard() {
             if(res.status==0){
                 setBoard(res.board)
             }
+            else if (res.status==20){
+                console.log("game interrupted")
+                navigate("/home")
+            }
         })
     },[])
     
@@ -28,7 +36,11 @@ export default function TicTacBoard() {
         socket.emit("gameTurn",cell)
         socket.on("gameTurn",(res)=>{
             res = JSON.parse(res);
-            if(res.status==10){
+            if (res.status==20){
+                console.log("game interrupted")
+                navigate("/home")
+            }
+            else if(res.status==10){
                 setOutputMsg(res.outputMsg)
             }
             else if(res.status==1){
@@ -43,9 +55,17 @@ export default function TicTacBoard() {
         })
     }
 
-    return (
+    const handleLeavingGame = ()=>{
+        navigate("/home")
+    }
+
+    const resetGame = ()=>{
+        socket.emit("resetGame")
+    }
+
+    return(
         <>
-        <div className="main" >
+        <div className="main">
         <div><h1>Room Id:{roomId}</h1></div>
         <div><h1>Player:{gameInfo.name}</h1></div>
         <div className="board">
@@ -62,11 +82,15 @@ export default function TicTacBoard() {
         </div>
         <div id="outputMsg">
             <h1>
-        {outputMsg}
-
+            {outputMsg}
             </h1>
+            <div>
+            <button onClick={resetGame}>reset</button>
+            </div>
+            <div>
+            <button onClick={handleLeavingGame}>exit</button>
+            </div>
         </div>
-        
         </>
     )
 }

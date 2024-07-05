@@ -78,6 +78,11 @@ const generateRoomId = ()=>{
   return Math.floor(Math.random()*2100000000).toString(36)
 }
 
+const resetPlayer = (socketId)=>{
+  players[socketId].inGame=false;
+  players[socketId].roomId=null;
+  players[socketId].turn=null;
+}
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -122,15 +127,37 @@ app.post("/createGame",(req,res)=>{
       players:[socketId],
       turn:0,
     }
-
     console.log("room "+roomId+" created ")
-
     res.send(JSON.stringify({status:0,roomId:roomId}))
+})
+
+app.post("/resetUser",(req,res)=>{
+    const socketId = req.body.socketId;
+    resetPlayer(socketId)
+    res.send()
 })
 
 io.on('connection', (socket) => {
   console.log(socket.id+' connected');
 
+
+  socket.on("leaveGame",()=>{
+    if(players[socket.id]&&players[socket.id]["roomId"]){
+      const roomId = players[socket.id]["roomId"]
+
+    for(const room in rooms){
+      if(players[socket.id]&&room["roomId"]==roomId){
+        delete rooms[room]
+      }
+    }
+      io.in(roomId).emit("gameTurn",JSON.stringify({"status":20,"outputMsg":""}));
+      console.log(socket.id," exited ",roomId)
+      socket.leave(players[socket.id]["roomId"])
+    }
+    else{
+
+    }
+  })
   socket.on("createGame",(roomId)=>{
     socket.join(roomId)
   })
@@ -161,8 +188,22 @@ io.on('connection', (socket) => {
     }
   })
 
-
+  socket.on("resetGame",()=>{
+    const roomId = players[socket.id].roomId
+    rooms[roomId].board=[" "," "," ",
+      " "," "," ",
+      " "," "," ",]
+      io.in(roomId).emit("gameTurn",JSON.stringify(
+        { "status":0,
+          "board":rooms[roomId]["board"],
+          "outputMsg":""   
+        }))
+        rooms[roomId].turn=0
+  })
   socket.on("gameTurn",(move)=>{
+    if(!players[socket.id]){
+      return;
+    }
       const roomId = players[socket.id]["roomId"]
       console.log(socket.id,roomId)
       if(rooms[roomId]["turn"]==-1){
@@ -222,10 +263,23 @@ io.on('connection', (socket) => {
  
 
   socket.on("disconnecting", () => {
+    if(players[socket.id] && players[socket.id]["inGame"]==true){
+        const roomId = players[socket.id]["roomId"];
+        console.log(roomId,"game inturupted")
+        io.in(roomId).emit("gameTurn",JSON.stringify({"status":20,"outputMsg":""}));
+    }
+    
     console.log("disconnecting",socket.rooms)
     for(const room of socket.rooms){
       delete rooms[room];
     }
+
+    for(const room in rooms){
+      if(players[socket.id]&&rooms["roomId"]==players[socket.id].roomId){
+        delete rooms[room]
+      }
+    }
+    
     delete players[socket.id]
     for(const name in namesToPlayers){
       if(namesToPlayers[name]==socket.id){

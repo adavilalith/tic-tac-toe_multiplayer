@@ -16,6 +16,9 @@ export default function HomePage() {
     }
     else{
       //clean user info on server side
+      socket.emit("leaveGame",socket.id)
+      axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/resetUser",{socketId:socket.id})
+
     }
   },[])
 
