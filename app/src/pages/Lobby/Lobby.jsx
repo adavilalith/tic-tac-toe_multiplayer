@@ -7,6 +7,12 @@ export default function Lobby() {
   const socket = useContext(SocketContext)
   const gameInfo = useContext(GameContext)  
 
+
+  useEffect(()=>{
+    if(!gameInfo.inGame){
+      navigate("/home")
+    }
+  },[])
   socket.on("gameStart",(msg)=>{
     if(msg=="success"){
         gameInfo.inGame=true
@@ -18,7 +24,7 @@ export default function Lobby() {
       <h1>lobby</h1>
       <h3>invite code:</h3>
       <h1>
-      {socket.id}
+      {gameInfo.roomId}
       </h1>
     </div>
   )

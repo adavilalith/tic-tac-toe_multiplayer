@@ -1,4 +1,6 @@
 const { error } = require('console');
+const bodyParser = require('body-parser'); 
+
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -14,6 +16,17 @@ const io = new Server(server,{
 
 let rooms = {}
 let players = {}
+let namesToPlayers = {}
+
+
+app.use(bodyParser.json())
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
+});
+
 
 const checkWinner = (board)=>{
   console.log("checking")
@@ -61,27 +74,64 @@ const checkWinner = (board)=>{
   }
 }
 
+const generateRoomId = ()=>{
+  return Math.floor(Math.random()*2100000000).toString(36)
+}
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+
+app.post("/createUser",(req,res)=>{
+  const socketId = req.body.socketId;
+  const userName = req.body.userName;
+  if(userName in namesToPlayers ){
+    return res.send(JSON.stringify({status:1,msg:"userName already exists"}))
+  }
+  else{
+      if(players[socketId]){
+        for (let name in namesToPlayers){
+          if(namesToPlayers[name]==socketId){
+            delete namesToPlayers[name];
+          }
+        }
+      }
+      players[socketId]={
+        name:userName,
+        inGame:false,
+        roomId:null,
+        turn:null,   
+    }
+    namesToPlayers[userName]=socketId;
+    console.log(namesToPlayers)
+    return res.send(JSON.stringify({status:0,msg:""}))
+  }
+})
+
+app.post("/createGame",(req,res)=>{
+  const socketId = req.body.socketId;
+  let roomId=String(generateRoomId())
+    players[socketId]["roomId"]=roomId;
+    players[socketId]["turn"]=0
+    players[socketId]["inGame"]=true;
+    rooms[roomId]={
+      roomId:roomId,
+      count:1,
+      players:[socketId],
+      turn:0,
+    }
+
+    console.log("room "+roomId+" created ")
+
+    res.send(JSON.stringify({status:0,roomId:roomId}))
+})
+
 io.on('connection', (socket) => {
-  console.log(socket.id+'connected');
+  console.log(socket.id+' connected');
 
   socket.on("createGame",(roomId)=>{
-    console.log("room "+roomId+" created ")
-    rooms[roomId]={}
-    rooms[roomId]["roomId"]=roomId
-    rooms[roomId]["count"]=1
-    rooms[roomId]["players"]=[socket.id]
-    rooms[roomId]["turn"] = 0
-
-
-    players[socket.id]={}
-    players[socket.id]["turn"]={}
-    players[socket.id]["roomId"]=roomId
-    players[socket.id]["turn"]=0
     socket.join(roomId)
   })
 
@@ -97,7 +147,9 @@ io.on('connection', (socket) => {
 
       players[socket.id]={}
       players[socket.id]["roomId"]=roomId
+      players[socket.id]["inGame"]=true
       players[socket.id]["turn"]=1
+      console.log(players[socket.id])
 
 
       console.log(socket.id+" joined "+" room "+roomId)
@@ -112,7 +164,7 @@ io.on('connection', (socket) => {
 
   socket.on("gameTurn",(move)=>{
       const roomId = players[socket.id]["roomId"]
-
+      console.log(socket.id,roomId)
       if(rooms[roomId]["turn"]==-1){
         rooms[roomId].board=[" "," "," ",
           " "," "," ",
@@ -133,7 +185,7 @@ io.on('connection', (socket) => {
             io.in(roomId).emit("gameTurn",JSON.stringify(
               { "status":1,
                 "board":rooms[roomId]["board"],
-                "outputMsg": `The Winner is ${socket.id}`   
+                "outputMsg": `The Winner is ${players[socket.id]["name"]}`   
               }))
           }
           else if(res==-1){
@@ -175,6 +227,11 @@ io.on('connection', (socket) => {
       delete rooms[room];
     }
     delete players[socket.id]
+    for(const name in namesToPlayers){
+      if(namesToPlayers[name]==socket.id){
+        delete namesToPlayers[name];
+      }
+    }
   });
 
   socket.on("disconnect",()=>{

@@ -2,12 +2,12 @@ import React,{useContext, useState} from 'react'
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import "./CreateUser.css"
-import { SocketContext } from '../../App';
+import { GameContext, SocketContext } from '../../App';
 
 export default function CreateUser() {
 
     const socket = useContext(SocketContext);
-
+    const gameInfo = useContext(GameContext);
     const navigate = useNavigate();
 
     const [userName,setUserName]  =  useState("");
@@ -15,10 +15,10 @@ export default function CreateUser() {
     const [errorMsg,setErrorMsg] = useState("");
 
     const handleCreateUser = async ()=>{
-        console.log(userName)
         const res =await axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/createUser",{userName:userName,socketId:socket.id});
         console.log(res);
         if(res.data.status==0){
+            gameInfo.name = userName
             navigate("/Home");
         }
         else{

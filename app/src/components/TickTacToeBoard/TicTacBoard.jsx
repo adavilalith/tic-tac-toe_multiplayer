@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import "./TicTacBoard.css"
 import { Socket } from 'socket.io-client';
-import { SocketContext } from '../../App';
+import { GameContext, SocketContext } from '../../App';
 
-export default function TicTacBoard({roomId}) {
+export default function TicTacBoard() {
     const socket = useContext(SocketContext)
+    const gameInfo = useContext(GameContext)
+    const roomId = gameInfo.roomId
     const [board,setBoard] = useState([" "," "," ",
                                        " "," "," ",
                                        " "," "," ",
@@ -44,7 +46,8 @@ export default function TicTacBoard({roomId}) {
     return (
         <>
         <div className="main" >
-        <div><h1>{roomId}</h1></div>
+        <div><h1>Room Id:{roomId}</h1></div>
+        <div><h1>Player:{gameInfo.name}</h1></div>
         <div className="board">
             <div className="cell" id="1" onClick={()=>updateBoard(0)}>{board[0]}</div>
             <div className="cell" id="2" onClick={()=>updateBoard(1)}>{board[1]}</div>
