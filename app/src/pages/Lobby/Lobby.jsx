@@ -21,7 +21,6 @@ export default function Lobby() {
         navigate("/GamePage")
     }
  })    
-  gameInfo.roomId="safsadfsa"
   return (
     <div id="main">
       <div>

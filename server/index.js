@@ -79,6 +79,7 @@ const generateRoomId = ()=>{
 }
 
 const resetPlayer = (socketId)=>{
+  players[socketId].name=players[socketId].name
   players[socketId].inGame=false;
   players[socketId].roomId=null;
   players[socketId].turn=null;
@@ -91,7 +92,7 @@ const clearPlayer = (socketId)=>{
       }
   }
   for(const r in Object.keys(rooms)){
-      const playersInRoom = rooms[r];
+      const playersInRoom = rooms[r].players;
       if(playersInRoom[0]==socketId||playersInRoom[1]==socketId){
         delete rooms[r];
       }
@@ -123,6 +124,7 @@ app.post("/createUser",(req,res)=>{
         turn:null,   
     }
     namesToPlayers[userName]=socketId;
+    console.log(socketId, " user created")
     return res.send(JSON.stringify({status:0,msg:""}))
   }
 })
@@ -192,11 +194,9 @@ io.on('connection', (socket) => {
         " "," "," ",]
       rooms[roomId]["turn"] = 0
 
-      players[socket.id]={}
       players[socket.id]["roomId"]=roomId
       players[socket.id]["inGame"]=true
       players[socket.id]["turn"]=1
-      console.log(players[socket.id])
 
 
       console.log(socket.id+" joined "+" room "+roomId)
@@ -206,6 +206,7 @@ io.on('connection', (socket) => {
       console.log("room full!!!")
       socket.emit("joinGame","fail")
     }
+    console.log(players)
   })
 
   socket.on("resetGame",()=>{
@@ -246,6 +247,8 @@ io.on('connection', (socket) => {
           rooms[roomId]["board"][move] = (rooms[roomId]["turn"]%2==0)?"X":"O";
           const res = checkWinner(rooms[roomId]["board"])
           if(res==1){
+            console.log(socket.id," winner")
+            console.log(players)
             rooms[roomId]["turn"]=-1
             io.in(roomId).emit("gameTurn",JSON.stringify(
               { "status":1,
