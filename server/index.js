@@ -68,7 +68,7 @@ const checkWinner = (board)=>{
           }
       }
       if(fullCond){
-          setRunning(-1);
+          return -1;
       }
       
   }
@@ -209,6 +209,9 @@ io.on('connection', (socket) => {
   })
 
   socket.on("resetGame",()=>{
+    if(!players[socket.id]){
+      return;
+    }
     const roomId = players[socket.id].roomId
     rooms[roomId].board=[" "," "," ",
       " "," "," ",
@@ -218,7 +221,7 @@ io.on('connection', (socket) => {
           "board":rooms[roomId]["board"],
           "outputMsg":""   
         }))
-        rooms[roomId].turn=0
+        rooms[roomId].turn=-1
   })
 
   socket.on("gameTurn",(move)=>{
@@ -238,7 +241,7 @@ io.on('connection', (socket) => {
             }))
             rooms[roomId].turn+=1
       }
-      else{
+      
         if(socket.id==rooms[roomId]["players"][(rooms[roomId]["turn"])%2]){
           rooms[roomId]["board"][move] = (rooms[roomId]["turn"]%2==0)?"X":"O";
           const res = checkWinner(rooms[roomId]["board"])
@@ -275,7 +278,7 @@ io.on('connection', (socket) => {
               "outputMsg":"not your turn"  
             }))
         }
-      }
+      
   })
 
   

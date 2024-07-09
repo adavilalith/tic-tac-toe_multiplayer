@@ -15,7 +15,7 @@ export default function HomePage() {
 
   useEffect(()=>{
     if(gameInfo.name==""){
-      // navigate('/')
+      navigate('/')
     }
     else{
       //clean user info on server side
@@ -26,7 +26,7 @@ export default function HomePage() {
         setPlayers(JSON.parse(players))
       })
     }
-    setPlayers({1:{name:"asfasfaf"},2:{name:"bthtsd"},3:{name:"csdgsd"}})
+    // setPlayers({1:{name:"asfasfaf"},2:{name:"bthtsd"},3:{name:"csdgsd"}})
   },[])
   
 
