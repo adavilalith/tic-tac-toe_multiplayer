@@ -23,7 +23,11 @@ export default function HomePage() {
       axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/resetUser",{socketId:socket.id})
       socket.on("getPlayers",(players)=>{
         console.log(players)
-        setPlayers(JSON.parse(players))
+        players=JSON.parse(players)
+        gameInfo.inGame=false
+        gameInfo.turn=null
+        gameInfo.roomId=null
+        setPlayers(players)
       })
     }
     // setPlayers({1:{name:"asfasfaf",inGame:false},2:{name:"bthtsd",inGame:false},3:{name:"csdgsd",inGame:true}})

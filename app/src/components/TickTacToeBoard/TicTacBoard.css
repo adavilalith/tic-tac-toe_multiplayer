@@ -4,11 +4,18 @@
   align-items: center;
 }
 
+
+
+#roomId-div{
+  margin-top:10%;
+}
+
 .board{
-    display: grid;
-    grid-template-columns: repeat(3,auto);
-    
-  }
+  margin-top:10%;
+  display: grid;
+  grid-template-columns: repeat(3,auto);
+  max-width: 300px;  
+}
   .cell{
     border:2px solid;
     border-color: rgb(255, 255, 255);
@@ -19,7 +26,27 @@
   }
 
 
-#outputMsg{
+#outputMsg-div{
+  inline-size: 300px;
+  overflow-wrap: break-word;
   text-align: center;
+}
+
+#outputMsg{
+  margin-top: 5%;
+  font-size: x-large;
+  text-align: center;
+}
+
+#reset-btn-div{
+  margin: 10% 0%;
+  display: flex;
+  justify-content: center;
+}
+
+#exit-btn-div{
+  margin: 10% 0%;
+  display: flex;
+  justify-content: center;
 }
   

@@ -18,7 +18,6 @@ export default function TicTacBoard() {
     const [turn,setTurn] = useState(0);
     const [outputMsg,setOutputMsg] = useState("");
     const [running,setRunning] = useState(true);
-    
     useEffect(()=>{
         if(gameInfo.inGame==false){
             navigate("/home")
@@ -68,9 +67,13 @@ export default function TicTacBoard() {
 
     return(
         <>
-        <div className="main">
-        <div><h1>Room Id:{roomId}</h1></div>
-        <div><h1>Player:{gameInfo.name}</h1></div>
+        <div className="lobbymain">
+        <div id="roomId-div">
+            <h3 id="roomId">Room Id : {roomId}</h3>
+            </div>
+        <div id="player-name-div">
+            <h3 id="player-name">Player : {gameInfo.name}</h3>
+        </div>
         <div className="board">
             <div className="cell" id="1" onClick={()=>updateBoard(0)}>{board[0]}</div>
             <div className="cell" id="2" onClick={()=>updateBoard(1)}>{board[1]}</div>
@@ -82,16 +85,18 @@ export default function TicTacBoard() {
             <div className="cell" id="8" onClick={()=>updateBoard(7)}>{board[7]}</div>
             <div className="cell" id="9" onClick={()=>updateBoard(8)}>{board[8]}</div>
         </div>
-        </div>
-        <div id="outputMsg">
-            <h1>
-            {outputMsg}
-            </h1>
-            <div>
-            <button onClick={resetGame}>reset</button>
+        <div>
+            <div id="outputMsg-div">
+                <p id="outputMsg">
+                {outputMsg}
+                </p>
             </div>
-            <div>
-            <button onClick={handleLeavingGame}>exit</button>
+            <div id="reset-btn-div">
+                <button id="reset-btn" onClick={resetGame}>reset</button>
+            </div>
+            <div id="exit-btn-div">
+                <button id="exit-btn" onClick={handleLeavingGame}>exit</button>
+            </div>
             </div>
         </div>
         </>

@@ -197,6 +197,11 @@ clearUselessDate();
         delete rooms[room]
       }
     }
+    players[socket.id].inGame=false;
+    players[socket.id].turn=null;
+    players[socket.id].roomId=null;
+
+
       io.in(roomId).emit("gameTurn",JSON.stringify({"status":20,"outputMsg":""}));
       console.log(socket.id," exited ",roomId)
       socket.leave(players[socket.id]["roomId"])
