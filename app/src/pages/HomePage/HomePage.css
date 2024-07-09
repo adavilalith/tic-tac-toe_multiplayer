@@ -14,3 +14,10 @@
 .Title{
     color: burlywood;
 }
+
+#player-list{
+    background: #1a1a1a;
+}
+#players-list > *{
+    background-color: aqua;
+}

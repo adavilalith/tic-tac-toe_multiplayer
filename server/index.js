@@ -84,6 +84,25 @@ const resetPlayer = (socketId)=>{
   players[socketId].turn=null;
 }
 
+const clearPlayer = (socketId)=>{
+  for(const n in Object.keys(namesToPlayers)){
+      if(namesToPlayers[n]==socketId){
+        delete namesToPlayers[n];
+      }
+  }
+  for(const r in Object.keys(rooms)){
+      const playersInRoom = rooms[r];
+      if(playersInRoom[0]==socketId||playersInRoom[1]==socketId){
+        delete rooms[r];
+      }
+  }
+  for(const p in Object.keys(players)){
+    if(players[p]==socketId||p==socketId){
+      delete players[p]
+    }
+  }
+}
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
@@ -92,25 +111,18 @@ app.get('/', (req, res) => {
 app.post("/createUser",(req,res)=>{
   const socketId = req.body.socketId;
   const userName = req.body.userName;
-  if(userName in namesToPlayers ){
+  if(userName in namesToPlayers&&namesToPlayers[userName]!=userName){
     return res.send(JSON.stringify({status:1,msg:"userName already exists"}))
   }
   else{
-      if(players[socketId]){
-        for (let name in namesToPlayers){
-          if(namesToPlayers[name]==socketId){
-            delete namesToPlayers[name];
-          }
-        }
-      }
-      players[socketId]={
+    clearPlayer(socketId)
+    players[socketId]={
         name:userName,
         inGame:false,
         roomId:null,
         turn:null,   
     }
     namesToPlayers[userName]=socketId;
-    console.log(namesToPlayers)
     return res.send(JSON.stringify({status:0,msg:""}))
   }
 })
@@ -137,6 +149,15 @@ app.post("/resetUser",(req,res)=>{
     res.send()
 })
 
+app.post("/clearPlayer",(req,res)=>{
+  const socketId = req.body.socketId;
+  clearPlayer(socketId)
+  res.send()
+  console.log(socketId, "cleared")
+})
+
+
+
 io.on('connection', (socket) => {
   console.log(socket.id+' connected');
 
@@ -154,16 +175,15 @@ io.on('connection', (socket) => {
       console.log(socket.id," exited ",roomId)
       socket.leave(players[socket.id]["roomId"])
     }
-    else{
-
-    }
+    io.emit("getPlayers",JSON.stringify(players))
+    
   })
   socket.on("createGame",(roomId)=>{
     socket.join(roomId)
   })
 
   socket.on("joinGame",(roomId)=>{
-    if(rooms[roomId]["count"]<2){
+    if(rooms[roomId]&&rooms[roomId]["count"]<2){
       socket.join(roomId)
       rooms[roomId]["count"]=2;
       rooms[roomId]["players"].push(socket.id)
@@ -200,6 +220,7 @@ io.on('connection', (socket) => {
         }))
         rooms[roomId].turn=0
   })
+
   socket.on("gameTurn",(move)=>{
     if(!players[socket.id]){
       return;
@@ -257,8 +278,7 @@ io.on('connection', (socket) => {
       }
   })
 
-
-
+  
 
  
 

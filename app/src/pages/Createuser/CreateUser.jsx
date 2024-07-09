@@ -15,6 +15,8 @@ export default function CreateUser() {
     const [errorMsg,setErrorMsg] = useState("");
 
     const handleCreateUser = async ()=>{
+        console.log(socket.id)
+        await axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/clearPlayer",{socketId:socket.id})
         const res =await axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/createUser",{userName:userName,socketId:socket.id});
         console.log(res);
         if(res.data.status==0){

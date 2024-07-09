@@ -7,20 +7,28 @@ import axios from 'axios';
 export default function HomePage() {
   const navigate = useNavigate()
   const [connectId,setConnectId] = useState()
+  const [players,setPlayers] = useState({})
   const socket = useContext(SocketContext)
   const gameInfo = useContext(GameContext)
 
+    
+
   useEffect(()=>{
     if(gameInfo.name==""){
-      navigate('/')
+      // navigate('/')
     }
     else{
       //clean user info on server side
       socket.emit("leaveGame",socket.id)
       axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/resetUser",{socketId:socket.id})
-
+      socket.on("getPlayers",(players)=>{
+        console.log(players)
+        setPlayers(JSON.parse(players))
+      })
     }
+    setPlayers({1:{name:"asfasfaf"},2:{name:"bthtsd"},3:{name:"csdgsd"}})
   },[])
+  
 
   const createGame=async ()=>{
     console.log("creating game");
@@ -48,6 +56,7 @@ export default function HomePage() {
       }
     })
   }
+
   return (
     <>
     <div id="homemain">
@@ -60,6 +69,27 @@ export default function HomePage() {
       <div id="joinGame">
         <input type="text" onChange={(e)=>(setConnectId(e.target.value))} />
         <button onClick={joinGame}>join</button>
+      </div>
+      <div id="players">
+        <h2>Players Online</h2>
+        <div id="player-list">
+        {
+          Object.keys(players).map((p,i)=>{
+            if(p!=socket.id){
+            return (
+              <div id={`player${i}`} key={i}
+                style={{textAlign:"center"}}
+              >
+                <p>{players[p].name}</p>
+              </div>
+            )
+          }
+          else{
+            return
+          }
+          })
+        }
+        </div>
       </div>
     </div>
     </>

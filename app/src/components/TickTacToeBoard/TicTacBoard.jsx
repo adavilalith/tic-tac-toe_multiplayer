@@ -20,6 +20,9 @@ export default function TicTacBoard() {
     const [running,setRunning] = useState(true);
     
     useEffect(()=>{
+        if(gameInfo.inGame==false){
+            navigate("/home")
+        }
         socket.on("gameTurn",(res)=>{
             res=JSON.parse(res)
             if(res.status==0){
