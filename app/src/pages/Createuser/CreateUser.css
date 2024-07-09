@@ -1,8 +1,33 @@
 #main{
     display: flex;
     flex-direction: column;
+    margin:2%
+    
 }
 
 #main>*{
     margin: 20px 0;
+}
+
+#title{
+    color: burlywood;
+}
+#creation-div{
+    margin-top: 15%;
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+}
+
+#creation-instruction{
+    margin-top:20%;
+    margin-bottom: 10%;
+}
+
+#creation-btn-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top:5%;
+    margin-bottom: 5%;
 }

@@ -1,7 +1,20 @@
+.Title{
+    margin-top: 20px;
+    color: burlywood;
+}
+
+
+
 #createGame{
     padding: 20% 0%;
     display: flex;
     justify-content: center;
+}
+
+
+#game-join-btn{
+    margin-left: 5%;
+    font-weight: bold;
 }
 
 #joinGame{
@@ -10,14 +23,59 @@
     justify-content: center;
 }
 
-
-.Title{
-    color: burlywood;
+#create-game-btn{
+    font-weight: bold;
 }
+
 
 #player-list{
-    background: #1a1a1a;
 }
-#players-list > *{
-    background-color: aqua;
+
+.player-name-div{
+
+    display:flex;
+    flex-wrap: nowrap;
+    background: #1a1a1a;
+    padding: 4% 0%;
+    border-color: #242424;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 7px;
+}
+
+.player-name-text{
+    /* background: #1a1a1a; */
+    flex-grow: .7;
+    padding-left: 2%;
+    font-weight: bold;
+    font-size:larger;
+    align-self: left;
+}
+
+.player-duel-btn{
+    align-self: flex-end;
+    background-color: #242424;
+    color: #deb887;
+}
+
+.player-inGame-false{
+    background:  greenyellow;
+    border-radius: 99999px;
+    flex-grow: 1;
+    width: 10px;
+    height: 10px;
+    max-width: 10px;
+    margin-left: 2%;
+    align-self: center;}
+
+.player-inGame-true{
+    background:orangered;
+
+    border-radius: 99999px;
+    flex-grow: 1;
+    width: 10px;
+    height: 10px;
+    max-width: 10px;
+    margin-left: 2%;
+    align-self: center;
 }

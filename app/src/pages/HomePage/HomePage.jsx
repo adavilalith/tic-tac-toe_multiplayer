@@ -26,7 +26,7 @@ export default function HomePage() {
         setPlayers(JSON.parse(players))
       })
     }
-    // setPlayers({1:{name:"asfasfaf"},2:{name:"bthtsd"},3:{name:"csdgsd"}})
+    // setPlayers({1:{name:"asfasfaf",inGame:false},2:{name:"bthtsd",inGame:false},3:{name:"csdgsd",inGame:true}})
   },[])
   
 
@@ -64,30 +64,32 @@ export default function HomePage() {
         <h1>Tic Tac Toe</h1>
       </div>
       <div id="createGame">
-        <button onClick={createGame}>create game</button>
+        <button id="create-game-btn" onClick={createGame}>create game</button>
       </div>
       <div id="joinGame">
         <input type="text" onChange={(e)=>(setConnectId(e.target.value))} />
-        <button onClick={joinGame}>join</button>
+        <button id="game-join-btn" onClick={joinGame}>join</button>
       </div>
       <div id="players">
-        <h2>Players Online</h2>
+        <h2>Players Online{":  "+Object.keys(players).length}</h2>
         <div id="player-list">
+          <div className="player-name-div">
+            <div className={`player-inGame-${gameInfo.inGame}`}></div>
+            <p className="player-name-text">{gameInfo.name+" (You)"}</p>
+          </div>
         {
           Object.keys(players).map((p,i)=>{
             if(p!=socket.id){
-            return (
-              <div id={`player${i}`} key={i}
-                style={{textAlign:"center"}}
-              >
-                <p>{players[p].name}</p>
-              </div>
-            )
+              return(
+                <div className="player-name-div" key={i}>
+                  <p className={`player-inGame-${players[p].inGame}`}></p>
+                  <p className="player-name-text">{players[p].name}</p>
+                  {/* <button className="player-duel-btn">Duel</button> */}
+                </div>
+              ) 
+            }
           }
-          else{
-            return
-          }
-          })
+          )
         }
         </div>
       </div>
