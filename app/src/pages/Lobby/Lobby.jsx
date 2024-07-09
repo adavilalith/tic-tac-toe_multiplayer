@@ -27,8 +27,8 @@ export default function Lobby() {
       <h1 className="Title">Lobby</h1>
       </div>      
       <div id="waiting-text-div">
-        <p class="watiting-text">Waiting for second player . . . </p>
-      <p class="waiting-text">Share the below invite code to another player to start game</p>
+        <p className="watiting-text">Waiting for second player . . . </p>
+      <p className="waiting-text">Share the below invite code to another player to start game</p>
 
       </div>
       <div id="invite-code-div">

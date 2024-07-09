@@ -27,9 +27,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-
 const checkWinner = (board)=>{
-  console.log("checking")
   const winCond = [[0,1,2],
                    [3,4,5],
                    [6,7,8],
@@ -162,6 +160,32 @@ app.post("/clearPlayer",(req,res)=>{
 
 io.on('connection', (socket) => {
   console.log(socket.id+' connected');
+  const clearUselessDate = async ()=>{
+    const sockets = await io.fetchSockets();
+    for(const socketId in sockets){
+      // deleting useless player info
+      for(const p in Object.keys(players)){
+        if(!(p in sockets)){
+          delete players[p]
+        }
+      }
+      // deleting useless nameToPlayer info
+      for(const n in Object.keys(namesToPlayers)){
+        if(!(namesToPlayers[n] in sockets)){
+          delete namesToPlayers[n];
+        }
+      }
+      //deleting useless
+      for(const r in Object.keys(rooms)){
+        const p1 = rooms[r].players[0];
+        const p2 = rooms[r].players[1];
+        if(!(p1 in sockets)||!(p2 in sockets)){
+          delete rooms[r];
+        }
+      }
+    }
+}
+clearUselessDate();
 
 
   socket.on("leaveGame",()=>{
@@ -203,10 +227,9 @@ io.on('connection', (socket) => {
       io.in(roomId).emit("gameStart","success")
   }
     else{
-      console.log("room full!!!")
+      console.log(socket.id," tried to join", roomId," room full")
       socket.emit("joinGame","fail")
     }
-    console.log(players)
   })
 
   socket.on("resetGame",()=>{
@@ -230,7 +253,6 @@ io.on('connection', (socket) => {
       return;
     }
       const roomId = players[socket.id]["roomId"]
-      console.log(socket.id,roomId)
       if(rooms[roomId]["turn"]==-1){
         rooms[roomId].board=[" "," "," ",
           " "," "," ",
@@ -247,8 +269,7 @@ io.on('connection', (socket) => {
           rooms[roomId]["board"][move] = (rooms[roomId]["turn"]%2==0)?"X":"O";
           const res = checkWinner(rooms[roomId]["board"])
           if(res==1){
-            console.log(socket.id," winner")
-            console.log(players)
+            console.log(socket.id," winner in ",roomId);
             rooms[roomId]["turn"]=-1
             io.in(roomId).emit("gameTurn",JSON.stringify(
               { "status":1,
@@ -315,8 +336,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on("disconnect",()=>{
+    
     console.log(socket.id+" disconnected")
-    console.log(rooms)
   })
 
 

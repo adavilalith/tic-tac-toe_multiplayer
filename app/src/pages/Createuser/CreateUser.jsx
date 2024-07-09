@@ -18,7 +18,6 @@ export default function CreateUser() {
         console.log(socket.id)
         if(userName==""){
             setErrorMsg("enter a username");
-            setTimeout(setErrorMsg(""),30000)
             return;
         }
         await axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/clearPlayer",{socketId:socket.id})
@@ -31,7 +30,6 @@ export default function CreateUser() {
         else{
             console.log(res.data.msg)
             setErrorMsg(res.data.msg);
-            setTimeout(setErrorMsg(""),30000)
         }
     }
   return (
