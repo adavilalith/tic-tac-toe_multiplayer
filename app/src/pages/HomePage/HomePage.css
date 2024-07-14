@@ -42,7 +42,7 @@
 
 .player-name-text{
     /* background: #1a1a1a; */
-    flex-grow: .7;
+    flex-grow: .8;
     padding-left: 2%;
     font-weight: bold;
     font-size:larger;
@@ -53,19 +53,34 @@
     align-self: flex-end;
     background-color: #242424;
     color: #deb887;
+    padding:5px 10px;
+    flex-grow: .2;
+    margin-right: 10px;
 }
 
-.player-inGame-false{
-    background:  greenyellow;
+.player-inGame-false-inLobby-false{
+    background:  rgb(56, 232, 7);
     border-radius: 99999px;
     flex-grow: 1;
     width: 10px;
     height: 10px;
     max-width: 10px;
     margin-left: 2%;
-    align-self: center;}
+    align-self: center;
+}
 
-.player-inGame-true{
+.player-inGame-true-inLobby-true{
+    background:  rgb(251, 251, 2);
+    border-radius: 99999px;
+    flex-grow: 1;
+    width: 10px;
+    height: 10px;
+    max-width: 10px;
+    margin-left: 2%;
+    align-self: center;
+}
+
+.player-inGame-true-inLobby-false{
     background:orangered;
 
     border-radius: 99999px;

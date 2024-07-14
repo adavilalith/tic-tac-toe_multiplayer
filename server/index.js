@@ -15,7 +15,7 @@ const io = new Server(server,{
 );
 
 let rooms = {}
-let players = {}
+var players = {}
 let namesToPlayers = {}
 
 
@@ -79,6 +79,7 @@ const generateRoomId = ()=>{
 const resetPlayer = (socketId)=>{
   players[socketId].name=players[socketId].name
   players[socketId].inGame=false;
+  players[socketId].inLobby=false;
   players[socketId].roomId=null;
   players[socketId].turn=null;
 }
@@ -90,10 +91,12 @@ const clearPlayer = (socketId)=>{
       }
   }
   for(const r in Object.keys(rooms)){
+    if(rooms[r]){
       const playersInRoom = rooms[r].players;
       if(playersInRoom[0]==socketId||playersInRoom[1]==socketId){
         delete rooms[r];
       }
+    }
   }
   for(const p in Object.keys(players)){
     if(players[p]==socketId||p==socketId){
@@ -118,6 +121,7 @@ app.post("/createUser",(req,res)=>{
     players[socketId]={
         name:userName,
         inGame:false,
+        inLobby:false,
         roomId:null,
         turn:null,   
     }
@@ -133,6 +137,7 @@ app.post("/createGame",(req,res)=>{
     players[socketId]["roomId"]=roomId;
     players[socketId]["turn"]=0
     players[socketId]["inGame"]=true;
+    players[socketId]["inLobby"]=true;
     rooms[roomId]={
       roomId:roomId,
       count:1,
@@ -141,6 +146,7 @@ app.post("/createGame",(req,res)=>{
     }
     console.log("room "+roomId+" created ")
     res.send(JSON.stringify({status:0,roomId:roomId}))
+    
 })
 
 app.post("/resetUser",(req,res)=>{
@@ -177,11 +183,13 @@ io.on('connection', (socket) => {
       }
       //deleting useless
       for(const r in Object.keys(rooms)){
-        const p1 = rooms[r].players[0];
-        const p2 = rooms[r].players[1];
-        if(!(p1 in sockets)||!(p2 in sockets)){
-          delete rooms[r];
-        }
+        if(rooms[r]){
+          const p1 = rooms[r].players[0];
+          const p2 = rooms[r].players[1];
+          if(!(p1 in sockets)||!(p2 in sockets)){
+            delete rooms[r];
+          }
+        } 
       }
     }
 }
@@ -211,9 +219,12 @@ clearUselessDate();
   })
   socket.on("createGame",(roomId)=>{
     socket.join(roomId)
+    io.emit("getPlayers",JSON.stringify(players))
+
   })
 
   socket.on("joinGame",(roomId)=>{
+  
     if(rooms[roomId]&&rooms[roomId]["count"]<2){
       socket.join(roomId)
       rooms[roomId]["count"]=2;
@@ -228,13 +239,18 @@ clearUselessDate();
       players[socket.id]["turn"]=1
 
 
+      players[rooms[roomId].players[0]].inLobby=false
+
       console.log(socket.id+" joined "+" room "+roomId)
       io.in(roomId).emit("gameStart","success")
+      io.emit("getPlayers",JSON.stringify(players))
+      
   }
     else{
       console.log(socket.id," tried to join", roomId," room full")
       socket.emit("joinGame","fail")
     }
+
   })
 
   socket.on("resetGame",()=>{

@@ -10,7 +10,7 @@ import CreateUser from './pages/Createuser/CreateUser';
 const socket = io("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/");
 
 export const GameContext = createContext(null);
-const gameInfo = {name:"",inGame:false,roomId:null,turn:null}
+const gameInfo = {name:"",inGame:false,roomId:null,turn:null,inLobby:false}
            
 
 export const SocketContext = createContext(null)
