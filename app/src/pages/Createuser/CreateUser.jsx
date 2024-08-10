@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import "./CreateUser.css"
 import { GameContext, SocketContext } from '../../App';
+import { backendURL } from '../../config/backendURL';
+
 
 export default function CreateUser() {
 
@@ -20,8 +22,8 @@ export default function CreateUser() {
             setErrorMsg("enter a username");
             return;
         }
-        await axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/clearPlayer",{socketId:socket.id})
-        const res =await axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/createUser",{userName:userName,socketId:socket.id});
+        await axios.post(backendURL+"/clearPlayer",{socketId:socket.id})
+        const res = await axios.post(backendURL+"/createUser",{userName:userName,socketId:socket.id});
         console.log(res);
         if(res.data.status==0){
             gameInfo.name = userName

@@ -3,7 +3,7 @@ import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 import { GameContext, SocketContext } from '../../App';
 import axios from 'axios';
-
+import { backendURL } from '../../config/backendURL';
 export default function HomePage() {
   const navigate = useNavigate()
   const [connectId,setConnectId] = useState()
@@ -20,7 +20,7 @@ export default function HomePage() {
     else{
       //clean user info on server side
       socket.emit("leaveGame",socket.id)
-      axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/resetUser",{socketId:socket.id})
+      axios.post(backendURL+"/resetUser",{socketId:socket.id})
       socket.on("getPlayers",(players)=>{
         console.log(players)
         players=JSON.parse(players)
@@ -37,7 +37,7 @@ export default function HomePage() {
 
   const createGame=async ()=>{
     console.log("creating game");
-    const res = await axios.post("https://psychic-doodle-vxr44vj9jj4fp4r4-8080.app.github.dev/createGame",{socketId:socket.id})
+    const res = await axios.post(backendURL+"/createGame",{socketId:socket.id})
     socket.emit("createGame",res.data.roomId)
     gameInfo.roomId=res.data.roomId
     gameInfo.inGame=true
