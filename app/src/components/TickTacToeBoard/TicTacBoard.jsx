@@ -20,7 +20,7 @@ export default function TicTacBoard() {
     const [running,setRunning] = useState(true);
     useEffect(()=>{
         if(gameInfo.inGame==false){
-            navigate("/home")
+            navigate("/Home")
         }
         socket.on("gameTurn",(res)=>{
             res=JSON.parse(res)
@@ -29,7 +29,7 @@ export default function TicTacBoard() {
             }
             else if (res.status==20){
                 console.log("game interrupted")
-                navigate("/home")
+                navigate("/Home")
             }
         })
     },[])
@@ -40,7 +40,7 @@ export default function TicTacBoard() {
             res = JSON.parse(res);
             if (res.status==20){
                 console.log("game interrupted")
-                navigate("/home")
+                navigate("/Home")
             }
             else if(res.status==10){
                 setOutputMsg(res.outputMsg)
@@ -58,7 +58,7 @@ export default function TicTacBoard() {
     }
 
     const handleLeavingGame = ()=>{
-        navigate("/home")
+        navigate("/Home")
     }
 
     const resetGame = ()=>{

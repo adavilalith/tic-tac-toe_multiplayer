@@ -19,17 +19,18 @@ export default function HomePage() {
     }
     else{
       //clean user info on server side
+      socket.emit("leaveGame",socket.id)
       axios.post(backendURL+"/resetUser",{socketId:socket.id}).then((res)=>{
-        socket.emit("leaveGame",socket.id)
-        socket.on("getPlayers",(players)=>{
-          console.log(players)
-          players=JSON.parse(players)
-          gameInfo.inGame=players[socket.id].inGame
-          gameInfo.inLobby=players[socket.id].inLobby
-          gameInfo.turn=players[socket.id].turn
-          gameInfo.roomId=players[socket.id].roomId
-          setPlayers(players)
-        })
+        socket.emit("getPlayers","")
+      })
+      socket.on("getPlayers",(players)=>{
+        console.log(players)
+        players=JSON.parse(players)
+        gameInfo.inGame=players[socket.id].inGame
+        gameInfo.inLobby=players[socket.id].inLobby
+        gameInfo.turn=players[socket.id].turn
+        gameInfo.roomId=players[socket.id].roomId
+        setPlayers(players)
       })
     }
     // setPlayers({1:{name:"asfasfaf",inGame:false},2:{name:"bthtsd",inGame:false},3:{name:"csdgsd",inGame:true}})
@@ -50,6 +51,7 @@ export default function HomePage() {
   }
 
   const joinGame=(roomId)=>{
+    console.log("joining",roomId)
     socket.emit("joinGame",roomId)
     socket.on("gameStart",(msg)=>{
       console.log(msg)
@@ -83,7 +85,7 @@ export default function HomePage() {
       </div>
       <div id="joinGame">
         <input type="text" onChange={(e)=>(setConnectId(e.target.value))} />
-        <button id="game-join-btn" onClick={(connectId)=>joinGame(connectId)}>join</button>
+        <button id="game-join-btn" onClick={()=>joinGame(connectId)}>join</button>
       </div>
       <div id="players">
         <h2>Players Online{":  "+Object.keys(players).length}</h2>

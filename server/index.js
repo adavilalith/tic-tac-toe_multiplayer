@@ -197,6 +197,10 @@ io.on("connection", (socket) => {
   };
   clearUselessDate();
 
+  socket.on("getPlayers",()=>{
+    io.emit("getPlayers", JSON.stringify(players));
+  })
+
   socket.on("leaveGame", () => {
     if (players[socket.id] && players[socket.id]["roomId"]) {
       const roomId = players[socket.id]["roomId"];
@@ -206,18 +210,20 @@ io.on("connection", (socket) => {
           delete rooms[room];
         }
       }
-      players[socket.id].inGame = false;
-      players[socket.id].turn = null;
-      players[socket.id].roomId = null;
-
       io.in(roomId).emit(
         "gameTurn",
         JSON.stringify({ status: 20, outputMsg: "" })
       );
-      console.log(socket.id, " exited ", roomId);
+      players[socket.id].inGame = false;
+      players[socket.id].turn = null;
+      players[socket.id].roomId = null;
+
+      
+    io.emit("getPlayers", JSON.stringify(players));
+    console.log(socket.id, " exited ", roomId);
       socket.leave(players[socket.id]["roomId"]);
     }
-    io.emit("getPlayers", JSON.stringify(players));
+    
   });
   socket.on("createGame", (roomId) => {
     socket.join(roomId);
