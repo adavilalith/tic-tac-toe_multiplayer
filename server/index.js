@@ -131,6 +131,9 @@ app.post("/createUser", (req, res) => {
 
 app.post("/createGame", (req, res) => {
   const socketId = req.body.socketId;
+  if(!players[socketId]){
+    return   res.send(JSON.stringify({ status: 1}));
+  }
   let roomId = String(generateRoomId());
   players[socketId]["roomId"] = roomId;
   players[socketId]["turn"] = 0;

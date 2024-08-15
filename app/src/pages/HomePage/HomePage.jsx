@@ -19,16 +19,17 @@ export default function HomePage() {
     }
     else{
       //clean user info on server side
-      socket.emit("leaveGame",socket.id)
-      axios.post(backendURL+"/resetUser",{socketId:socket.id})
-      socket.on("getPlayers",(players)=>{
-        console.log(players)
-        players=JSON.parse(players)
-        gameInfo.inGame=players[socket.id].inGame
-        gameInfo.inLobby=players[socket.id].inLobby
-        gameInfo.turn=players[socket.id].turn
-        gameInfo.roomId=players[socket.id].roomId
-        setPlayers(players)
+      axios.post(backendURL+"/resetUser",{socketId:socket.id}).then((res)=>{
+        socket.emit("leaveGame",socket.id)
+        socket.on("getPlayers",(players)=>{
+          console.log(players)
+          players=JSON.parse(players)
+          gameInfo.inGame=players[socket.id].inGame
+          gameInfo.inLobby=players[socket.id].inLobby
+          gameInfo.turn=players[socket.id].turn
+          gameInfo.roomId=players[socket.id].roomId
+          setPlayers(players)
+        })
       })
     }
     // setPlayers({1:{name:"asfasfaf",inGame:false},2:{name:"bthtsd",inGame:false},3:{name:"csdgsd",inGame:true}})
@@ -38,6 +39,9 @@ export default function HomePage() {
   const createGame=async ()=>{
     console.log("creating game");
     const res = await axios.post(backendURL+"/createGame",{socketId:socket.id})
+    if(res.status==1){
+      navigate('/');
+    }
     socket.emit("createGame",res.data.roomId)
     gameInfo.roomId=res.data.roomId
     gameInfo.inGame=true
