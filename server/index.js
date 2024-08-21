@@ -343,7 +343,7 @@ io.on("connection", (socket) => {
         );
       }
     } else {
-      io.in(roomId).emit(
+      io.sockets.in(socket.id).emit(
         "gameTurn",
         JSON.stringify({ status: 10, outputMsg: "not your turn" })
       );
@@ -379,7 +379,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {https://tictactoebackendglitch.glitch.me
+  socket.on("disconnect", () => {
     console.log(socket.id + " disconnected");
   });
 });
