@@ -26,6 +26,7 @@ app.use(function (req, res, next) {
 });
 
 const checkWinner = (board) => {
+  
   const winCond = [
     [0, 1, 2],
     [3, 4, 5],
@@ -45,28 +46,29 @@ const checkWinner = (board) => {
         break;
       }
     }
+    if (Xwin) {
+      return 1;
+    }
     for (let i = 0; i < 3; i++) {
       if (board[winCond[cond][i]] != "O") {
         Owin = false;
         break;
       }
     }
-    if (Xwin) {
-      return 1;
-    }
+    
     if (Owin) {
       return 1;
     }
-    let fullCond = true;
-    for (let i = 0; i < 9; i++) {
-      if (board[i] == " ") {
-        fullCond = false;
-        break;
-      }
+  }
+  let fullCond = true;
+  for (let i = 0; i < 9; i++) {
+    if (board[i] == " ") {
+      fullCond = false;
+      break;
     }
-    if (fullCond) {
-      return -1;
-    }
+  }
+  if (fullCond) {
+    return -1;
   }
 };
 
@@ -80,6 +82,7 @@ const resetPlayer = (socketId) => {
   players[socketId].inLobby = false;
   players[socketId].roomId = null;
   players[socketId].turn = null;
+  players[socketId].duelOpen = false;
 };
 
 const clearPlayer = (socketId) => {
@@ -122,6 +125,7 @@ app.post("/createUser", (req, res) => {
       inLobby: false,
       roomId: null,
       turn: null,
+      duelOpen: false,
     };
     namesToPlayers[userName] = socketId;
     console.log(socketId, " user created");
@@ -139,6 +143,7 @@ app.post("/createGame", (req, res) => {
   players[socketId]["turn"] = 0;
   players[socketId]["inGame"] = true;
   players[socketId]["inLobby"] = true;
+  players[socketId]["duelOpen"] = false;
   rooms[roomId] = {
     roomId: roomId,
     count: 1,
@@ -214,7 +219,10 @@ io.on("connection", (socket) => {
         "gameTurn",
         JSON.stringify({ status: 20, outputMsg: "" })
       );
+
       players[socket.id].inGame = false;
+      players[socket.id].inLobby = false;
+      players[socket.id].duelOpen = false;
       players[socket.id].turn = null;
       players[socket.id].roomId = null;
 
@@ -230,6 +238,14 @@ io.on("connection", (socket) => {
     io.emit("getPlayers", JSON.stringify(players));
   });
 
+  socket.on("openDuel",(cond)=>{
+    if(players[socket.id]){
+    console.log(socket.id,"|",cond)
+    players[socket.id].duelOpen=cond;
+    io.emit("getPlayers", JSON.stringify(players));
+    }
+  })
+
   socket.on("joinGame", (roomId) => {
     if (rooms[roomId] && rooms[roomId]["count"] < 2) {
       socket.join(roomId);
@@ -240,6 +256,8 @@ io.on("connection", (socket) => {
 
       players[socket.id]["roomId"] = roomId;
       players[socket.id]["inGame"] = true;
+      players[socket.id].inLobby = false;
+      players[socket.id].duelOpen = false;
       players[socket.id]["turn"] = 1;
 
       players[rooms[roomId].players[0]].inLobby = false;

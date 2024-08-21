@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GameContext, SocketContext } from '../../App'
 import { useNavigate } from 'react-router-dom'
 import './Lobby.css';
@@ -9,10 +9,11 @@ export default function Lobby() {
   const socket = useContext(SocketContext)
   const gameInfo = useContext(GameContext)  
 
+  const [dummuy,setDummy] = useState(false)
 
   useEffect(()=>{
     if(!gameInfo.inGame){
-      navigate("/home")
+      navigate("/Home")
     }
   },[])
   socket.on("gameStart",(msg)=>{
@@ -21,6 +22,11 @@ export default function Lobby() {
         navigate("/GamePage")
     }
  })    
+  const handleDuel = ()=>{
+    gameInfo.duelOpen = !gameInfo.duelOpen
+    socket.emit("openDuel",gameInfo.duelOpen)
+    setDummy(gameInfo.duelOpen)
+  }
   return (
     <div id="main">
       <div>
@@ -34,7 +40,10 @@ export default function Lobby() {
       <div id="invite-code-div">
         <h3 id="invite-code-text">Invite Code</h3>
         <h1 id="invite-code">{gameInfo.roomId}</h1>      
-    </div>
+      </div>
+      <div id="duel-div">
+        <button id={"duel-btn-"+((!gameInfo.duelOpen)?"open":"close")} onClick={handleDuel}>{(!gameInfo.duelOpen)?"Open Duel":"Close Duel"}</button>
+      </div>
     </div>
   )
 }

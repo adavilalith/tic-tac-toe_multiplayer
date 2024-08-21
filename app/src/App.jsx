@@ -11,7 +11,7 @@ import { backendURL } from './config/backendURL';
 const socket = io(backendURL);
 
 export const GameContext = createContext(null);
-const gameInfo = {name:"",inGame:false,roomId:null,turn:null,inLobby:false}
+const gameInfo = {name:"",inGame:false,roomId:null,turn:null,inLobby:false,duelOpen:false}
            
 
 export const SocketContext = createContext(null)

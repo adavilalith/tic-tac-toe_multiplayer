@@ -35,6 +35,7 @@ export default function TicTacBoard() {
     },[])
     
     const updateBoard = (cell)=>{
+        console.log(cell)
         socket.emit("gameTurn",cell)
         socket.on("gameTurn",(res)=>{
             res = JSON.parse(res);
@@ -70,9 +71,6 @@ export default function TicTacBoard() {
         <div className="lobbymain">
         <div id="roomId-div">
             <h3 id="roomId">Room Id : {roomId}</h3>
-            </div>
-        <div id="player-name-div">
-            <h3 id="player-name">Player : {gameInfo.name}</h3>
         </div>
         <div className="board">
             <div className="cell" id="1" onClick={()=>updateBoard(0)}>{board[0]}</div>

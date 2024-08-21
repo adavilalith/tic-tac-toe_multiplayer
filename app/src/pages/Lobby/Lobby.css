@@ -42,3 +42,25 @@
     padding: 5% 10%;
     font-size: 300%;
 }
+
+#duel-div{
+    margin: 10% 0%;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#duel-btn-open{
+    background-color: greenyellow;
+    color: black;
+    padding: 10px 5px;
+    font-size: x-large;
+    font-weight: 1000;
+}
+#duel-btn-close{
+    background-color: rgb(200, 39, 39);
+    color: white;
+    padding: 10px 5px;
+    font-size: x-large;
+    font-weight: 1000;
+}

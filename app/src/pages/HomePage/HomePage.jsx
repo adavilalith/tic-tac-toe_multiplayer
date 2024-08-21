@@ -46,11 +46,31 @@ export default function HomePage() {
     socket.emit("createGame",res.data.roomId)
     gameInfo.roomId=res.data.roomId
     gameInfo.inGame=true
+    gameInfo.duelOpen=false
     gameInfo.turn=0
     navigate('/Lobby');
   }
 
-  const joinGame=(roomId)=>{
+  const joinGame=(e)=>{
+    e.preventDefault();
+    let roomId = connectId;
+    console.log("joining",roomId)
+    socket.emit("joinGame",roomId)
+    socket.on("gameStart",(msg)=>{
+      console.log(msg)
+      if(msg=="success"){
+        console.log("lets play")
+        gameInfo.inGame=true
+        gameInfo.roomId=roomId
+        gameInfo.turn=1;
+        navigate("/GamePage")
+      }
+      else{
+        alert("room full")
+      }
+    })
+  }
+  const joinGameUsingDuel=(roomId)=>{
     console.log("joining",roomId)
     socket.emit("joinGame",roomId)
     socket.on("gameStart",(msg)=>{
@@ -69,7 +89,7 @@ export default function HomePage() {
   }
 
   const handleDuel = (p)=>{
-    setConnectId(p.roomId)
+    joinGameUsingDuel(p.roomId)
     joinGame(p.roomId)
   }
 
@@ -83,10 +103,12 @@ export default function HomePage() {
       <div id="createGame">
         <button id="create-game-btn" onClick={createGame}>create game</button>
       </div>
-      <div id="joinGame">
-        <input type="text" onChange={(e)=>(setConnectId(e.target.value))} />
-        <button id="game-join-btn" onClick={()=>joinGame(connectId)}>join</button>
-      </div>
+     <form onSubmit={(e)=>joinGame(e)} >
+        <div id="joinGame">
+          <input type="text" onChange={(e)=>(setConnectId(e.target.value))} />
+          <button id="game-join-btn" type="submit">join</button>
+        </div>
+     </form>
       <div id="players">
         <h2>Players Online{":  "+Object.keys(players).length}</h2>
         <div id="player-list">
@@ -101,7 +123,7 @@ export default function HomePage() {
                 <div className="player-name-div" key={i}>
                   <p className={`player-inGame-${players[p].inGame}-inLobby-${players[p].inLobby}`}></p>
                   <p className="player-name-text">{players[p].name}</p>
-                  {(players[p].inLobby)?<button className="player-duel-btn" onClick={()=>handleDuel(players[p])}>Duel</button>:""}
+                  {(players[p].inLobby && players[p].duelOpen)?<button className="player-duel-btn" onClick={()=>handleDuel(players[p])}>Duel</button>:""}
                 </div>
               ) 
             }

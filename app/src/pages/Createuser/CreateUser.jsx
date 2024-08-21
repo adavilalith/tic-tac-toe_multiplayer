@@ -16,7 +16,8 @@ export default function CreateUser() {
 
     const [errorMsg,setErrorMsg] = useState("");
 
-    const handleCreateUser = async ()=>{
+    const handleCreateUser = async (e)=>{
+        e.preventDefault();
         console.log(socket.id)
         if(userName==""){
             setErrorMsg("enter a username");
@@ -40,14 +41,16 @@ export default function CreateUser() {
         <div className="Title">
          <h1>Tic Tac Toe</h1>
         </div>
+        <form onSubmit={(e)=>handleCreateUser(e)}>
             <div id="creation-div">
                 <h3 id="creation-instruction">please enter your name below</h3>
                 <input id="username-input" type="text" onChange={(e)=>setUserName(e.target.value)} />
                 <div id="creation-btn-div">
-                    <button id="creation-btn" onClick={handleCreateUser}>Create</button>
+                    <button id="creation-btn" type="submit">Create</button>
                 </div>
                 <h2>{errorMsg}</h2>
-                </div>
+            </div>
+        </form>
         </div>
     </>
   )
