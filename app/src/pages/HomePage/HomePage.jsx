@@ -100,7 +100,10 @@ export default function HomePage() {
       <div className="Title">
         <h1>Tic Tac Toe</h1>
       </div>
-      <div id="createGame">
+      <div id="play-with-bot-div">
+        <button id="playt-with-bot-btn">Play With Bot</button>
+      </div>
+      <div id="create-game-div">
         <button id="create-game-btn" onClick={createGame}>create game</button>
       </div>
      <form onSubmit={(e)=>joinGame(e)} >

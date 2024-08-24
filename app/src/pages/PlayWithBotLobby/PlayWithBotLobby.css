@@ -1,0 +1,14 @@
+#main{
+    display: flex;
+    flex-direction: column;
+    margin:5% 5%;
+
+
+.Title{
+    margin-top: 20px;
+    margin-bottom: 60px;
+    color: burlywood;
+    width:150%;
+    max-width:150%;
+}
+}

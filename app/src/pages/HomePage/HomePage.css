@@ -4,11 +4,25 @@
 }
 
 
-
-#createGame{
-    padding: 20% 0%;
+#play-with-bot-div{
+    padding: 10% 0%;
     display: flex;
     justify-content: center;
+}
+
+#play-with-bot-btn{
+    font-weight: bold;
+}
+
+
+#create-game-div{
+    padding: 10% 0%;
+    display: flex;
+    justify-content: center;
+}
+
+#create-game-btn{
+    font-weight: bold;
 }
 
 
@@ -17,15 +31,13 @@
     font-weight: bold;
 }
 
+
 #joinGame{
     padding: 20% 0%;
     display: flex;
     justify-content: center;
 }
 
-#create-game-btn{
-    font-weight: bold;
-}
 
 
 .player-name-div{
