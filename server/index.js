@@ -1,12 +1,14 @@
-const { error } = require("console");
 const bodyParser = require("body-parser");
-
+const { Socket } = require("dgram");
 const express = require("express");
 const app = express();
 const http = require("http");
 const { stringify } = require("querystring");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+
+const {bestMove} = require("./minimax.js")
+
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -57,7 +59,7 @@ const checkWinner = (board) => {
     }
     
     if (Owin) {
-      return 1;
+      return 2;
     }
   }
   let fullCond = true;
@@ -77,12 +79,14 @@ const generateRoomId = () => {
 };
 
 const resetPlayer = (socketId) => {
+  if(players[socketId]){
   players[socketId].name = players[socketId].name;
   players[socketId].inGame = false;
   players[socketId].inLobby = false;
   players[socketId].roomId = null;
   players[socketId].turn = null;
   players[socketId].duelOpen = false;
+  }
 };
 
 const clearPlayer = (socketId) => {
@@ -200,9 +204,9 @@ io.on("connection", (socket) => {
       }
     }
   };
-  clearUselessDate();
 
   socket.on("getPlayers",()=>{
+    clearUselessDate();
     io.emit("getPlayers", JSON.stringify(players));
   })
 
@@ -233,6 +237,42 @@ io.on("connection", (socket) => {
     }
     
   });
+
+  socket.on("joinBotLobby",()=>{
+    players[socket.id].inLobby = true
+    io.emit("getPlayers", JSON.stringify(players));
+  })
+
+  socket.on("startBotGame",(difficultyLevel)=>{
+    players[socket.id].inLobby = false
+    rooms[socket.id]={
+                      board:[" ", " ", " ", " ", " ", " ", " ", " ", " "],
+                      turn:0,
+                      difficultyLevel:Number(difficultyLevel),
+                    }
+
+    io.emit("getPlayers", JSON.stringify(players));
+  })
+
+  socket.on("botGameTurn",(cell)=>{
+    if(rooms[socket.id]){
+      if(rooms[socket.id].board){
+        if(rooms[socket.id].board[cell]==" "){
+          
+        }
+        else{
+          
+        }
+      }
+    }
+    
+  })
+
+  socket.on("resetBotGame",()=>{
+
+  })
+
+
   socket.on("createGame", (roomId) => {
     socket.join(roomId);
     io.emit("getPlayers", JSON.stringify(players));
@@ -309,7 +349,7 @@ io.on("connection", (socket) => {
     if (socket.id == rooms[roomId]["players"][rooms[roomId]["turn"] % 2]) {
       rooms[roomId]["board"][move] = rooms[roomId]["turn"] % 2 == 0 ? "X" : "O";
       const res = checkWinner(rooms[roomId]["board"]);
-      if (res == 1) {
+      if (res == 1||res == 2) {
         console.log(socket.id, " winner in ", roomId);
         rooms[roomId]["turn"] = -1;
         io.in(roomId).emit(

@@ -7,6 +7,7 @@ import Lobby from './pages/Lobby/Lobby';
 import GamePage from './pages/GamePage/GamePage';
 import CreateUser from './pages/Createuser/CreateUser';
 import PlayWithBotLobby from './pages/PlayWithBotLobby/PlayWithBotLobby';
+import BotGamePage from './pages/BotGamePage/BotGamePage';
 import { backendURL } from './config/backendURL';
 
 const socket = io(backendURL);
@@ -35,6 +36,7 @@ function App() {
         <Route path="/Lobby" element={<Lobby/>}></Route>
         <Route path="/GamePage" element={<GamePage/>}></Route>
         <Route path="/PlayWithBotLobby" element={<PlayWithBotLobby/>}></Route>
+        <Route path="/BotGamePage" element={<BotGamePage/>}></Route>
       </Routes>
       </SocketContext.Provider>
       </GameContext.Provider>

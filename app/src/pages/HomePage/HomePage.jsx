@@ -93,6 +93,10 @@ export default function HomePage() {
     joinGame(p.roomId)
   }
 
+  const handleBotLobby = ()=>{
+    gameInfo.inLobby=true
+    navigate("/PlayWithBotLobby")
+  }
 
   return (
     <>
@@ -101,7 +105,7 @@ export default function HomePage() {
         <h1>Tic Tac Toe</h1>
       </div>
       <div id="play-with-bot-div">
-        <button id="playt-with-bot-btn">Play With Bot</button>
+        <button id="playt-with-bot-btn" onClick={handleBotLobby}>Play With Bot</button>
       </div>
       <div id="create-game-div">
         <button id="create-game-btn" onClick={createGame}>create game</button>
