@@ -12,7 +12,7 @@ export default function PlayWithBotLobby() {
 
   const [difficultyLevel,setDifficultyLevel] = useState(2)
   let colors = ["greenyellow","green","yellow","orange","red"]
-  const difficulties = ["Impossible To Lose", "Easy Peasy", "I want to Play","Give me a Challenge ","Impossible To Win"]
+  const difficulties = ["First Game", "Easy Peasy", "I want to Play","Give me a Challenge ","Impossible To Win"]
 
 
   useEffect(()=>{

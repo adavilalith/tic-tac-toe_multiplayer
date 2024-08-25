@@ -362,6 +362,7 @@ io.on("connection", (socket) => {
         }
         else{
           io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:10,msg:"cell is full"}))    
+          return;
         }
       }
     }
