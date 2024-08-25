@@ -18,20 +18,17 @@ export default function CreateUser() {
 
     const handleCreateUser = async (e)=>{
         e.preventDefault();
-        console.log(socket.id)
         if(userName==""){
             setErrorMsg("enter a username");
             return;
         }
         await axios.post(backendURL+"/clearPlayer",{socketId:socket.id})
         const res = await axios.post(backendURL+"/createUser",{userName:userName,socketId:socket.id});
-        console.log(res);
         if(res.data.status==0){
             gameInfo.name = userName
             navigate("/Home");
         }
         else{
-            console.log(res.data.msg)
             setErrorMsg(res.data.msg);
         }
     }

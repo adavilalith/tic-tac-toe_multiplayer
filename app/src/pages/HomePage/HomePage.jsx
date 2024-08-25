@@ -23,9 +23,8 @@ export default function HomePage() {
       axios.post(backendURL+"/resetUser",{socketId:socket.id}).then((res)=>{
         socket.emit("getPlayers","")
       })
-      socket.on("getPlayers",(players)=>{
-        console.log(players)
-        players=JSON.parse(players)
+      socket.on("getPlayers",(p)=>{
+        const players=JSON.parse(p)
         gameInfo.inGame=players[socket.id].inGame
         gameInfo.inLobby=players[socket.id].inLobby
         gameInfo.turn=players[socket.id].turn
@@ -33,7 +32,6 @@ export default function HomePage() {
         setPlayers(players)
       })
     }
-    // setPlayers({1:{name:"asfasfaf",inGame:false},2:{name:"bthtsd",inGame:false},3:{name:"csdgsd",inGame:true}})
   },[])
   
 

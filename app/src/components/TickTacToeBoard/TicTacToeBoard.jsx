@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export default function TicTacBoard({board,outputMsg,updateBoard,resetGame,handleLeavingGame}) {
+export default function TicTacBoard({Title,board,outputMsg,updateBoard,resetGame,handleLeavingGame}) {
    
     return(
         <>
         <div className="lobbymain">
-        <div id="roomId-div">
-            <h3 id="roomId"></h3>
+        <div id="Title-div">
+            <h2 id="Title">{Title}</h2>
         </div>
         <div className="board">
             <div className="cell" id="1" onClick={()=>updateBoard(0)}>{board[0]}</div>

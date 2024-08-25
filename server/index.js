@@ -7,7 +7,6 @@ const { stringify } = require("querystring");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 
-const {bestMove} = require("./minimax.js")
 
 const io = new Server(server, {
   cors: {
@@ -26,6 +25,62 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Headers", "*");
   next();
 });
+
+    
+const bestMove =(board,wantToWin)=>{
+  let bestScore = -Infinity;
+  let move="nomove";
+  for(let i=0;i<9;i++){
+      if(board[i]==" "){
+          board[i]="O";
+          let score = minimax(board,(wantToWin)?false:true);
+          board[i]=" ";
+          if(score>bestScore){
+              bestScore = score;
+              move=i;
+          }
+      }
+      
+  }
+  return move;
+}
+
+const minimax = (board,isMaxMin)=>{
+  let res = checkWinner(board);
+  if(res==1){
+      return -1;
+  }
+  if(res==2){
+      return 1;
+  }
+  if(res==-1){
+      return 0;
+  }
+  let bestScore;
+  if(isMaxMin){
+      bestScore=-Infinity;
+      for(let i=0;i<9;i++){
+          if(board[i]==" "){
+              board[i]="O";
+              let score = minimax(board,!isMaxMin);
+              board[i]=" "
+              bestScore=Math.max(score,bestScore);
+          }
+      }
+  }
+  else{
+      bestScore=Infinity;
+      for(let i=0;i<9;i++){
+          if(board[i]==" "){
+              board[i]="X";
+              let score = minimax(board,!isMaxMin);
+              board[i]=" "
+              bestScore=Math.min(score,bestScore);
+          }
+      }
+  }
+  return bestScore;
+}
 
 const checkWinner = (board) => {
   
@@ -244,32 +299,85 @@ io.on("connection", (socket) => {
   })
 
   socket.on("startBotGame",(difficultyLevel)=>{
+    if(players[socket.id]){
+    console.log(difficultyLevel)
     players[socket.id].inLobby = false
     rooms[socket.id]={
                       board:[" ", " ", " ", " ", " ", " ", " ", " ", " "],
                       turn:0,
                       difficultyLevel:Number(difficultyLevel),
+                      isRunning:true,
                     }
 
     io.emit("getPlayers", JSON.stringify(players));
+                  }
   })
 
   socket.on("botGameTurn",(cell)=>{
+    
     if(rooms[socket.id]){
+      if(rooms[socket.id].isRunning==false){
+        io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:10,msg:"Reset Game"}))    
+        return;
+      }
       if(rooms[socket.id].board){
+        let board = rooms[socket.id].board 
         if(rooms[socket.id].board[cell]==" "){
-          
+          board[Number(cell)]="X"
+          let res;
+          res=checkWinner(board)
+          if(res==1||res==2){
+            io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:res,board:board,msg:(res==1)?"player wins":"bot wins"})) 
+            rooms[socket.id].isRunning=false;   
+            return;
+          }
+          if(res==-1){
+            io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:res,board:board,msg:"Tie"}))    
+            rooms[socket.id].isRunning=false;   
+            return;
+          }
+          const arr = [1,2,3,4]
+          if(arr[Math.floor(Math.random()*arr.length)]<rooms[socket.id].difficultyLevel){
+            res=bestMove(board,true)
+          }
+          else{
+            res=bestMove(board,false)
+          }
+
+          board[res]="O"
+          res=checkWinner(board)
+          if(res==1||res==2){
+            io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:res,board:board,msg:(res==1)?"player wins":"bot wins"}))    
+            rooms[socket.id].isRunning=false;   
+            return;
+          }
+          if(res==-1){
+            io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:res,board:board,msg:"Tie"}))    
+            rooms[socket.id].isRunning=false;   
+            return;
+          }
+          rooms[socket.id].board=board
+          io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:0,board:board,msg:""}))    
+          return;
         }
         else{
-          
+          io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:10,msg:"cell is full"}))    
         }
       }
     }
+    io.sockets.in(socket.id).emit("botGameTurn",JSON.stringify({status:20,msg:""}))
     
   })
 
   socket.on("resetBotGame",()=>{
-
+      if(rooms[socket.id]){
+        rooms[socket.id]={
+          board:[" ", " ", " ", " ", " ", " ", " ", " ", " "],
+          turn:0,
+          difficultyLevel:rooms[socket.id].difficultyLevel,
+          isRunning:true,
+        }
+      }
   })
 
 
@@ -299,6 +407,7 @@ io.on("connection", (socket) => {
       players[socket.id].inLobby = false;
       players[socket.id].duelOpen = false;
       players[socket.id]["turn"] = 1;
+      players[socket.id].isRunning = true;
 
       players[rooms[roomId].players[0]].inLobby = false;
 
@@ -317,6 +426,7 @@ io.on("connection", (socket) => {
     }
     const roomId = players[socket.id].roomId;
     rooms[roomId].board = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+    rooms[roomId].isRunning=true;
     io.in(roomId).emit(
       "gameTurn",
       JSON.stringify({
@@ -330,6 +440,13 @@ io.on("connection", (socket) => {
 
   socket.on("gameTurn", (move) => {
     if (!players[socket.id]) {
+      return;
+    }
+    if(rooms[players[socket.id].roomId].isRunning==false){
+      io.sockets.in(socket.id).emit(
+        "gameTurn",
+        JSON.stringify({ status: 10, outputMsg: "Reset Game" })
+      );
       return;
     }
     const roomId = players[socket.id]["roomId"];
@@ -352,6 +469,7 @@ io.on("connection", (socket) => {
       if (res == 1||res == 2) {
         console.log(socket.id, " winner in ", roomId);
         rooms[roomId]["turn"] = -1;
+        rooms[roomId].isRunning=false;
         io.in(roomId).emit(
           "gameTurn",
           JSON.stringify({
@@ -362,6 +480,7 @@ io.on("connection", (socket) => {
         );
       } else if (res == -1) {
         rooms[roomId]["turn"] = -1;
+        rooms[roomId].isRunning=false;
         io.in(roomId).emit(
           "gameTurn",
           JSON.stringify({

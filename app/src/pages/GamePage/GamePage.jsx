@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import TicTacToeBoard from "../../components/TickTacToeBoard/TicTaToecBoard"
+import TicTacToeBoard from "../../components/TickTacToeBoard/TicTacToeBoard"
 import { GameContext, SocketContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 
@@ -68,6 +68,7 @@ export default function GamePage() {
   return (
     <div>
       <TicTacToeBoard 
+                      Title={"Player vs Player"}
                       board={board}
                       outputMsg={outputMsg}
                       updateBoard={updateBoard}
