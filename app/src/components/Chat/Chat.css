@@ -21,11 +21,19 @@
     border-radius: 5px;
 }
 
-#userName{
-    color: #deb887;
+#userName0{
+    color: aqua;
     margin: 0px 3px;
     font-size: large;
 }
+
+#userName1{
+    color: red;
+    margin: 0px 3px;
+    font-size: large;
+}
+
+
 
 #msg-form{
     padding-bottom: 20px;

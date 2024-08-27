@@ -103,7 +103,7 @@ export default function HomePage() {
         <h1>Tic Tac Toe</h1>
       </div>
       <div id="play-with-bot-div">
-        <button id="playt-with-bot-btn" onClick={handleBotLobby}>Play With Bot</button>
+        <button id="play-with-bot-btn" onClick={handleBotLobby}>Play With Bot</button>
       </div>
       <div id="create-game-div">
         <button id="create-game-btn" onClick={createGame}>create game</button>

@@ -13,7 +13,6 @@ export default function GamePage() {
                                      " "," "," ",
                                      " "," "," ",
                                     ]);
-  const [turn,setTurn] = useState(0);
   const [outputMsg,setOutputMsg] = useState("");
   const [chat,setChat] = useState([])
   const [msg,setMsg] = useState("")

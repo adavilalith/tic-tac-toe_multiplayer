@@ -234,8 +234,11 @@ app.get("/test", (req, res) => {
 io.on("connection", (socket) => {
   console.log(socket.id + " connected");
   const clearUselessDate = async () => {
-    const sockets = await io.fetchSockets();
-    for (const socketId in sockets) {
+    const socketObjs = await io.fetchSockets();
+    const sockets = socketObjs.map((s)=>{
+      return s.id
+    })
+   
       // deleting useless player info
       for (const p in Object.keys(players)) {
         if (!(p in sockets)) {
@@ -248,7 +251,7 @@ io.on("connection", (socket) => {
           delete namesToPlayers[n];
         }
       }
-      //deleting useless
+      //deleting useless rooms
       for (const r in Object.keys(rooms)) {
         if (rooms[r]) {
           const p1 = rooms[r].players[0];
@@ -268,8 +271,8 @@ io.on("connection", (socket) => {
           }
         }
       }
-    }
-  };
+
+    };
 
   socket.on("getPlayers",()=>{
     clearUselessDate();
@@ -299,7 +302,7 @@ io.on("connection", (socket) => {
       
     io.emit("getPlayers", JSON.stringify(players));
     console.log(socket.id, " exited ", roomId);
-      socket.leave(players[socket.id]["roomId"]);
+    socket.leave(players[socket.id]["roomId"]);
     }
     
   });
@@ -563,6 +566,7 @@ io.on("connection", (socket) => {
         delete namesToPlayers[name];
       }
     }
+    io.emit("getPlayers", JSON.stringify(players));
   });
 
   socket.on("disconnect", () => {

@@ -4,8 +4,6 @@
   align-items: center;
 }
 
-
-
 #Title-div{
   margin-top:10%;
 }
@@ -49,5 +47,12 @@
   margin: 10% 0%;
   display: flex;
   justify-content: center;
+}
+
+.X{
+  color:aqua;
+}
+.O{
+  color:red;
 }
   
