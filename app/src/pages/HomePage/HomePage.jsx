@@ -36,7 +36,7 @@ export default function HomePage() {
   
 
   const createGame=async ()=>{
-    console.log("creating game");
+    
     const res = await axios.post(backendURL+"/createGame",{socketId:socket.id})
     if(res.status==1){
       navigate('/');
@@ -52,12 +52,12 @@ export default function HomePage() {
   const joinGame=(e)=>{
     e.preventDefault();
     let roomId = connectId;
-    console.log("joining",roomId)
+    
     socket.emit("joinGame",roomId)
     socket.on("gameStart",(msg)=>{
-      console.log(msg)
+      
       if(msg=="success"){
-        console.log("lets play")
+        
         gameInfo.inGame=true
         gameInfo.roomId=roomId
         gameInfo.turn=1;
@@ -69,12 +69,12 @@ export default function HomePage() {
     })
   }
   const joinGameUsingDuel=(roomId)=>{
-    console.log("joining",roomId)
+    
     socket.emit("joinGame",roomId)
     socket.on("gameStart",(msg)=>{
-      console.log(msg)
+      
       if(msg=="success"){
-        console.log("lets play")
+        
         gameInfo.inGame=true
         gameInfo.roomId=roomId
         gameInfo.turn=1;

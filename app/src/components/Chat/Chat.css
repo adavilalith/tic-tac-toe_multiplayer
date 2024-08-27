@@ -14,6 +14,8 @@
     max-height: 300px;
 }
 .msg-div{
+    display: flex;
+    flex-direction: column;
     overflow-wrap: break-word;
     background-color:#5b5b5b ;
     margin:10px;
@@ -22,17 +24,28 @@
 }
 
 #userName0{
-    color: aqua;
-    margin: 0px 3px;
+    align-self: flex-start;
+    background-color: rgb(193, 241, 241);
+    color: rgb(0, 4, 255);
+    padding:2px 7px;
     font-size: large;
+    font-weight: bold;
+    border-radius: 10px;
 }
 
 #userName1{
-    color: red;
-    margin: 0px 3px;
+    align-self: flex-start;
+    background-color: rgb(212, 133, 133);
+    color: rgb(128, 13, 13);
+    padding:2px 7px;
     font-size: large;
+    font-weight: bold;
+    border-radius: 10px;
 }
 
+#msg{
+    margin: 0px 5px;
+}
 
 
 #msg-form{

@@ -4,6 +4,7 @@ import Chat from '../../components/Chat/Chat';
 import { GameContext, SocketContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function GamePage() {
   const socket = useContext(SocketContext)
   const gameInfo = useContext(GameContext)
@@ -27,7 +28,7 @@ export default function GamePage() {
               setBoard(res.board)
           }
           else if (res.status==20){
-              console.log("game interrupted")
+              
               navigate("/Home")
           }
       })
@@ -35,12 +36,12 @@ export default function GamePage() {
   },[])
   
   const updateBoard = (cell)=>{
-      console.log(cell)
+      
       socket.emit("gameTurn",cell)
       socket.on("gameTurn",(res)=>{
           res = JSON.parse(res);
           if (res.status==20){
-              console.log("game interrupted")
+              
               navigate("/Home")
           }
           else if(res.status==10){

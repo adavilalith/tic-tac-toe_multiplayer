@@ -21,8 +21,8 @@ export const SocketContext = createContext(null)
 function App() {
   useEffect(()=>{
     socket.on("hello",(msg)=>{
-    console.log(msg)
-    console.log(socket.id)
+    
+    
     })
 
   },[])

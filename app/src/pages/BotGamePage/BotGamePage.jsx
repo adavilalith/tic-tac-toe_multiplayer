@@ -6,7 +6,7 @@ import TicTacToeBoard from '../../components/TickTacToeBoard/TicTacToeBoard';
 export default function BotGamePage() {
   useEffect(()=>{
     if(!gameInfo.inGame){
-      console.log("not in game")
+      
       navigate("/Home")
     }
   },[])

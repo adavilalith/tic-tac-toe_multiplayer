@@ -10,12 +10,12 @@ export default function Chat({handleMsgSend,chat,msg,setMsg}) {
         <div id="chat-div">
             <div id="msgs-div">
             {chat.map((msgInfo,i)=>{
-                                console.log(msgInfo.userName)
-                                console.log(`userName${(msgInfo.userName==gameInfo.name)?gameInfo.turn:Number(!gameInfo.turn)}`,msgInfo.msg)
+                                
+                                
                                 return (
                                     <div className="msg-div" key={i}>
-                                        <span id={`userName${(msgInfo.userName==gameInfo.name)?gameInfo.turn:Number(!gameInfo.turn)}`}>{msgInfo.userName} :</span>
-                                        <span id="msg">{msgInfo.msg}</span>
+                                        <div id={`userName${(msgInfo.userName==gameInfo.name)?gameInfo.turn:Number(!gameInfo.turn)}`}>{msgInfo.userName}</div>
+                                        <div id="msg">{msgInfo.msg}</div>
                                     </div>
                                 )
                             })
