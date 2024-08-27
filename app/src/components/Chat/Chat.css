@@ -1,0 +1,46 @@
+#chat-div{
+    border-style: solid;
+    border-width:1px;
+    border-radius: 4px;
+    width: 300px;
+    max-width: 300px;
+    max-height: 400px;
+    margin-bottom: 20px;
+}
+
+#msgs-div{
+    margin: 10px;
+    overflow-y: scroll;
+    max-height: 300px;
+}
+.msg-div{
+    overflow-wrap: break-word;
+    background-color:#5b5b5b ;
+    margin:10px;
+    padding:5px;
+    border-radius: 5px;
+}
+
+#userName{
+    color: #deb887;
+    margin: 0px 3px;
+    font-size: large;
+}
+
+#msg-form{
+    padding-bottom: 20px;
+    display:flex;
+    justify-content: center;
+}
+
+#msg-input{
+    width: 170px;
+}
+
+#msg-send-btn{
+    margin-left:10px;
+}
+
+
+
+

@@ -18,6 +18,7 @@ let rooms = {};
 var players = {};
 let namesToPlayers = {};
 
+
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
@@ -255,6 +256,16 @@ io.on("connection", (socket) => {
           if (!(p1 in sockets) || !(p2 in sockets)) {
             delete rooms[r];
           }
+          else if(p1){
+            if(p1.inGame==false){
+              delete rooms[r]
+            }
+          }
+          else if(p2){
+            if(p2.inGame==false){
+              delete rooms[r]
+            }
+          }
         }
       }
     }
@@ -398,16 +409,16 @@ io.on("connection", (socket) => {
   socket.on("joinGame", (roomId) => {
     if (rooms[roomId] && rooms[roomId]["count"] < 2) {
       socket.join(roomId);
-      rooms[roomId]["count"] = 2;
-      rooms[roomId]["players"].push(socket.id);
-      rooms[roomId]["board"] = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
-      rooms[roomId]["turn"] = 0;
+      rooms[roomId].count = 2;
+      rooms[roomId].players.push(socket.id);
+      rooms[roomId].board = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+      rooms[roomId].turn = 0;
 
-      players[socket.id]["roomId"] = roomId;
-      players[socket.id]["inGame"] = true;
+      players[socket.id].roomId = roomId;
+      players[socket.id].inGame = true;
       players[socket.id].inLobby = false;
       players[socket.id].duelOpen = false;
-      players[socket.id]["turn"] = 1;
+      players[socket.id].turn = 1;
       players[socket.id].isRunning = true;
 
       players[rooms[roomId].players[0]].inLobby = false;
@@ -509,6 +520,21 @@ io.on("connection", (socket) => {
       );
     }
   });
+
+  socket.on("gameChat",(msg)=>{
+    if(players[socket.id]&&players[socket.id].inGame&&players[socket.id].roomId){
+      let roomId = players[socket.id].roomId
+      if(rooms[roomId]){
+        let msgInfo = {
+          userName: players[socket.id].name,
+          userId: socket.id,
+          msg: msg,
+        }
+        io.in(roomId).emit("gameChat",JSON.stringify(msgInfo))
+      }
+    }
+    
+  })
 
   socket.on("disconnecting", () => {
     if (players[socket.id] && players[socket.id]["inGame"] == true) {

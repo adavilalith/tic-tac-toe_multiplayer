@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import TicTacToeBoard from "../../components/TickTacToeBoard/TicTacToeBoard"
+import Chat from '../../components/Chat/Chat';
 import { GameContext, SocketContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
-
 
 export default function GamePage() {
   const socket = useContext(SocketContext)
@@ -15,7 +15,9 @@ export default function GamePage() {
                                     ]);
   const [turn,setTurn] = useState(0);
   const [outputMsg,setOutputMsg] = useState("");
-  const [running,setRunning] = useState(true);
+  const [chat,setChat] = useState([])
+  const [msg,setMsg] = useState("")
+
   useEffect(()=>{
       if(gameInfo.inGame==false){
           navigate("/Home")
@@ -30,6 +32,7 @@ export default function GamePage() {
               navigate("/Home")
           }
       })
+
   },[])
   
   const updateBoard = (cell)=>{
@@ -63,7 +66,18 @@ export default function GamePage() {
   const resetGame = ()=>{
       socket.emit("resetGame")
   }
+  socket.on("gameChat",(msgInfo)=>{
+    msgInfo = JSON.parse(msgInfo)
+    let temp = [...chat]
+    temp.push(msgInfo)
+    setChat(temp)
+  })
 
+  const handleMsgSend = (e)=>{
+    e.preventDefault();
+    socket.emit("gameChat",msg)
+    setMsg("")
+  }
   
   return (
     <div>
@@ -75,6 +89,7 @@ export default function GamePage() {
                       resetGame={resetGame}
                       handleLeavingGame={handleLeavingGame}
       ></TicTacToeBoard>
+      <Chat handleMsgSend={handleMsgSend} chat={chat} msg={msg} setMsg={setMsg}></Chat>
     </div>
   )
 }
