@@ -88,7 +88,6 @@ export default function HomePage() {
 
   const handleDuel = (p)=>{
     joinGameUsingDuel(p.roomId)
-    joinGame(p.roomId)
   }
 
   const handleBotLobby = ()=>{
