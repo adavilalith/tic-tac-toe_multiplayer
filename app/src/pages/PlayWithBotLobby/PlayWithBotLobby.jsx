@@ -33,10 +33,8 @@ export default function PlayWithBotLobby() {
   
   return (
     <div id="main">
-      <div id="Title">
-        <h1 >Player</h1>
-        <h1>vs</h1>
-        <h1>Bot</h1>
+      <div className="Title">
+        <h2 >Player vs Bot</h2>
       </div>
       <h2>Select Diffuculty:</h2>     
       <h2 style={{"color": `${colors[difficultyLevel-1]}`}}>{`${difficulties[difficultyLevel-1]}`}</h2> 

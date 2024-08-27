@@ -6,8 +6,8 @@ export default function TicTacBoard({Title,board,outputMsg,updateBoard,resetGame
     return(
         <>
         <div className="lobbymain">
-        <div id="Title-div">
-            <h2 id="Title">{Title}</h2>
+        <div className='Title'>
+            <h2 >{Title}</h2>
         </div>
         <div className="board">
             <div className={`cell ${board[0]}`} id="1" onClick={()=>updateBoard(0)}>{board[0]}</div>
