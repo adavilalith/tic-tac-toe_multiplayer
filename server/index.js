@@ -201,7 +201,7 @@ app.post("/createGame", (req, res) => {
   let roomId = String(generateRoomId());
   players[socketId]["roomId"] = roomId;
   players[socketId]["turn"] = 0;
-  players[socketId]["inGame"] = true;
+  players[socketId]["inGame"] = false;
   players[socketId]["inLobby"] = true;
   players[socketId]["duelOpen"] = false;
   rooms[roomId] = {
@@ -309,22 +309,23 @@ io.on("connection", (socket) => {
 
   socket.on("joinBotLobby",()=>{
     players[socket.id].inLobby = true
+    players[socket.id].inGame = false
     io.emit("getPlayers", JSON.stringify(players));
   })
 
   socket.on("startBotGame",(difficultyLevel)=>{
     if(players[socket.id]){
-    console.log(difficultyLevel)
-    players[socket.id].inLobby = false
-    rooms[socket.id]={
-                      board:[" ", " ", " ", " ", " ", " ", " ", " ", " "],
-                      turn:0,
-                      difficultyLevel:Number(difficultyLevel),
-                      isRunning:true,
-                    }
+      players[socket.id].inGame = true
+      players[socket.id].inLobby = false
+      rooms[socket.id]={
+                        board:[" ", " ", " ", " ", " ", " ", " ", " ", " "],
+                        turn:0,
+                        difficultyLevel:Number(difficultyLevel),
+                        isRunning:true,
+                      }
 
-    io.emit("getPlayers", JSON.stringify(players));
-                  }
+      io.emit("getPlayers", JSON.stringify(players));
+    }
   })
 
   socket.on("botGameTurn",(cell)=>{
@@ -413,6 +414,7 @@ io.on("connection", (socket) => {
     if (rooms[roomId] && rooms[roomId]["count"] < 2) {
       socket.join(roomId);
       rooms[roomId].count = 2;
+      playres[rooms[roomId].players[0]].inGame=true
       rooms[roomId].players.push(socket.id);
       rooms[roomId].board = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
       rooms[roomId].turn = 0;
