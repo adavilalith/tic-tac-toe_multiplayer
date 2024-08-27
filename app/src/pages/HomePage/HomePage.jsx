@@ -93,6 +93,7 @@ export default function HomePage() {
 
   const handleBotLobby = ()=>{
     gameInfo.inLobby=true
+    socket.emit("joinBotLobby",)
     navigate("/PlayWithBotLobby")
   }
 

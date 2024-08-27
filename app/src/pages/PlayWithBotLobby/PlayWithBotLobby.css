@@ -20,3 +20,12 @@
     margin: 20% 0%;
     width: 250px;
 }
+
+#start-game-btn{
+    font-weight: bold;
+}
+
+#exit-lobby-btn{
+    font-weight: bold;
+    margin: 20% 0%;
+}

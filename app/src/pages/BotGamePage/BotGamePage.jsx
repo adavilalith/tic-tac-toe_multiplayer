@@ -4,6 +4,13 @@ import { GameContext, SocketContext } from '../../App';
 import TicTacToeBoard from '../../components/TickTacToeBoard/TicTacToeBoard';
 
 export default function BotGamePage() {
+  useEffect(()=>{
+    if(!gameInfo.inGame){
+      console.log("not in game")
+      navigate("/Home")
+    }
+  },[])
+
     const socket = useContext(SocketContext)
     const gameInfo = useContext(GameContext)
     const navigate = useNavigate()
@@ -54,12 +61,7 @@ export default function BotGamePage() {
     }
 
 
-    useEffect(()=>{
-        if(!gameInfo.inGame||!socket.id){
-          navigate("/Home")
-        }
-      },[])
-    
+   
   return (
           <div>
             <TicTacToeBoard 

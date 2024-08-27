@@ -81,7 +81,7 @@
     align-self: center;
 }
 
-.player-inGame-true-inLobby-true{
+.player-inGame-false-inLobby-true{
     background:  rgb(251, 251, 2);
     border-radius: 99999px;
     flex-grow: 1;

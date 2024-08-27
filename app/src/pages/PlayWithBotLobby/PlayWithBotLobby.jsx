@@ -27,7 +27,10 @@ export default function PlayWithBotLobby() {
     socket.emit("startBotGame",difficultyLevel)
     navigate("/BotGamePage")
   }
-
+  const handleLeavingLobby = ()=>{
+    navigate("/Home")
+  }
+  
   return (
     <div id="main">
       <div id="Title">
@@ -39,6 +42,7 @@ export default function PlayWithBotLobby() {
       <h2 style={{"color": `${colors[difficultyLevel-1]}`}}>{`${difficulties[difficultyLevel-1]}`}</h2> 
       <input id="difficulty-slider" type="range" max="5" min="1" value={difficultyLevel} onChange={(e)=>setDifficultyLevel(e.target.value)} style={{accentColor: `${colors[difficultyLevel-1]}`}}/>
       <button id="start-game-btn" onClick={handleStartBotGame}>Start Game</button>
+      <button id="exit-lobby-btn" onClick={handleLeavingLobby}>Exit Lobby</button>
     </div>
   )
 }

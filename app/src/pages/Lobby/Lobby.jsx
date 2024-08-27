@@ -27,6 +27,11 @@ export default function Lobby() {
     socket.emit("openDuel",gameInfo.duelOpen)
     setDummy(gameInfo.duelOpen)
   }
+
+  const handleLeavingLobby = ()=>{
+    navigate("/Home")
+  }
+
   return (
     <div id="main">
       <div>
@@ -43,6 +48,9 @@ export default function Lobby() {
       </div>
       <div id="duel-div">
         <button id={"duel-btn-"+((!gameInfo.duelOpen)?"open":"close")} onClick={handleDuel}>{(!gameInfo.duelOpen)?"Open Duel":"Close Duel"}</button>
+      </div>
+      <div id="exit-lobby-div">
+        <button id="exit-lobby-btn" onClick={handleLeavingLobby}>Exit Lobby</button>
       </div>
     </div>
   )
