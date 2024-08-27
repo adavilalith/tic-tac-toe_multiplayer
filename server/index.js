@@ -414,7 +414,7 @@ io.on("connection", (socket) => {
     if (rooms[roomId] && rooms[roomId]["count"] < 2) {
       socket.join(roomId);
       rooms[roomId].count = 2;
-      playres[rooms[roomId].players[0]].inGame=true
+      players[rooms[roomId].players[0]].inGame=true
       rooms[roomId].players.push(socket.id);
       rooms[roomId].board = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
       rooms[roomId].turn = 0;
