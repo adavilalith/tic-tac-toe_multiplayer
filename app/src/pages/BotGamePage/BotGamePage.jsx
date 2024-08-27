@@ -34,6 +34,7 @@ export default function BotGamePage() {
             setOutputMsg(res.msg)
           }
           else if(res.status==0){
+            setOutputMsg("")
             setBoard(res.board)
           }
           else if(res.status==1){
