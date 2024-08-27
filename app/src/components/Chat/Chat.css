@@ -9,20 +9,21 @@
 }
 
 #msgs-div{
-    margin: 10px;
+    margin:0px 20px;
+    margin-top:20px;
     overflow-y: scroll;
     max-height: 300px;
 }
+
 .msg-div{
     display: flex;
     flex-direction: column;
     overflow-wrap: break-word;
     background-color:#5b5b5b ;
-    margin:10px;
+    margin-bottom:10px;
     padding:5px;
     border-radius: 5px;
 }
-
 #userName0{
     align-self: flex-start;
     background-color: rgb(193, 241, 241);
@@ -49,6 +50,7 @@
 
 
 #msg-form{
+    margin-top:10px;
     padding-bottom: 20px;
     display:flex;
     justify-content: center;
