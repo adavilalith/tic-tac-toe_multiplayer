@@ -1,1 +1,1 @@
-export const backendURL = process.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
+export const backendURL = import.meta.env.VITE_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
